@@ -16,8 +16,6 @@ module NationStates.Nation (
     ) where
 
 
-import Data.Char
-
 import NationStates.Core
 
 

@@ -6,7 +6,6 @@ module NationStates.Core (
 
     Query(..),
     queryToUrl,
-    Parser,
 
     simpleField,
     splitDropBlanks,
@@ -40,7 +39,7 @@ import Text.XML.Light
 import NationStates.Types
 
 
-type NS = Compose ((,) Query) Parser
+type NS = Compose ((,) Query) ((->) Element)
 
 -- | Construct a request for a single shard.
 makeNS
@@ -116,9 +115,6 @@ queryToUrl q = (shards, options)
             Just is' -> [ name ++ "-" ++ show i | i <- Set.toList is' ] ]
     options = concat [ ";" ++ k ++ "=" ++ v |
         (k, v) <- Map.toList $ queryOptions q ]
-
-
-type Parser = (->) Element
 
 
 simpleField :: String -> Maybe Integer -> String -> NS String
