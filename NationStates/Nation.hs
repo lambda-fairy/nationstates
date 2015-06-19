@@ -15,8 +15,16 @@ module NationStates.Nation (
     gavote,
     scvote,
 
+    censusscore,
+    censusscore',
+
     ) where
 
+
+import Data.Maybe
+import qualified Data.Map as Map
+import qualified Data.MultiSet as MultiSet
+import Text.XML.Light
 
 import NationStates.Core
 
@@ -64,3 +72,31 @@ gavote = Nation . fmap (expect "General Assembly vote" readWAVote) $
 scvote :: Nation (Maybe Bool)
 scvote = Nation . fmap (expect "Security Council vote" readWAVote) $
     simpleField "scvote" Nothing "SCVOTE"
+
+
+censusscore :: Nation (Integer, Double)
+censusscore = Nation $ makeNS "censusscore" Nothing [] parse
+  where
+    parse q root = fromMaybe (error "could not find census score") $ do
+        (i, _) <- MultiSet.minView $ MultiSet.difference response request
+        x <- lookup i censusScores
+        return (i, x)
+      where
+        censusScores = extractCensusScores root
+        request = MultiSet.mapMaybe id . MultiSet.fromSet $
+            queryShards q Map.! "censusscore"
+        response = MultiSet.fromList $ map fst censusScores
+
+censusscore' :: Integer -> Nation Double
+censusscore' i = Nation $ makeNS "censusscore" (Just i) [] parse
+  where
+    parse _ = fromMaybe (error $ "could not find census " ++ show i) .
+        lookup i . extractCensusScores
+
+extractCensusScores :: Element -> [(Integer, Double)]
+extractCensusScores root = catMaybes [
+    (,) <$> maybeId <*> maybeValue |
+    Elem e <- elContent root,
+    elName e == unqual "CENSUSSCORE",
+    let maybeId = readMaybe =<< findAttr (unqual "id") e,
+    let maybeValue = readMaybe $ strContent e ]
