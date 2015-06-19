@@ -39,7 +39,7 @@ import Text.XML.Light
 import NationStates.Types
 
 
-type NS = Compose ((,) Query) ((->) Element)
+type NS = Compose ((,) Query) (Compose ((->) Query) ((->) Element))
 
 -- | Construct a request for a single shard.
 makeNS
@@ -49,14 +49,14 @@ makeNS
         -- ^ Shard ID
     -> [(String, String)]
         -- ^ List of options
-    -> (Element -> a)
+    -> (Query -> Element -> a)
         -- ^ Function for parsing the response
     -> NS a
 makeNS name maybeId options parse = Compose
     (Query {
         queryShards = Map.singleton name (Set.singleton maybeId),
         queryOptions = Map.fromList options
-    }, parse)
+    }, Compose parse)
 
 
 -- | Perform a request on the NationStates API.
@@ -67,10 +67,10 @@ requestNS
         -- ^ Set of shards to request
     -> Manager
     -> IO a
-requestNS kindAndName (Compose (q, p)) man
+requestNS kindAndName (Compose (q, Compose p)) man
     = parse . responseBody <$> httpLbs req man
   where
-    parse = p . fromMaybe (error "invalid response") . parseXMLDoc
+    parse = p q . fromMaybe (error "invalid response") . parseXMLDoc
     req = initRequest {
         queryString
             = HTTP.renderQuery True (HTTP.toQuery $
@@ -112,9 +112,9 @@ queryToUrl q = (shards, options)
 
 
 simpleField :: String -> Maybe Integer -> String -> NS String
-simpleField shard maybeId elemName = makeNS shard maybeId [] parser
+simpleField shard maybeId elemName = makeNS shard maybeId [] parse
   where
-    parser = strContent . fromMaybe errorMissing . findChild (unqual elemName)
+    parse _ = strContent . fromMaybe errorMissing . findChild (unqual elemName)
     errorMissing = error $ "missing <" ++ elemName ++ "> element"
 
 splitDropBlanks :: Eq a => [a] -> [a] -> [[a]]
