@@ -97,3 +97,17 @@ showWACategory c = case c of
     RightWingUtopia -> "Right-wing Utopia"
     ScandinavianLiberalParadise -> "Scandinavian Liberal Paradise"
     TyrannyByMajority -> "Tyranny by Majority"
+
+
+readWAVote :: String -> Maybe (Maybe Bool)
+readWAVote s = case s of
+    "UNDECIDED" -> Just Nothing
+    "FOR" -> Just $ Just True
+    "AGAINST" -> Just $ Just False
+    _ -> Nothing
+
+showWAVote :: Maybe Bool -> String
+showWAVote v = case v of
+    Nothing -> "UNDECIDED"
+    Just True -> "FOR"
+    Just False -> "AGAINST"

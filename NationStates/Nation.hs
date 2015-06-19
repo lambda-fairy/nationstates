@@ -12,6 +12,8 @@ module NationStates.Nation (
     motto,
     category,
     endorsements,
+    gavote,
+    scvote,
 
     ) where
 
@@ -54,3 +56,11 @@ wa = Nation . fmap parse $ simpleField "wa" Nothing "UNSTATUS"
 endorsements :: Nation [String]
 endorsements = Nation . fmap (splitDropBlanks ",") $
     simpleField "endorsements" Nothing "ENDORSEMENTS"
+
+gavote :: Nation (Maybe Bool)
+gavote = Nation . fmap (expect "General Assembly vote" readWAVote) $
+    simpleField "gavote" Nothing "GAVOTE"
+
+scvote :: Nation (Maybe Bool)
+scvote = Nation . fmap (expect "Security Council vote" readWAVote) $
+    simpleField "scvote" Nothing "SCVOTE"
