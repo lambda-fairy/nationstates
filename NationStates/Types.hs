@@ -32,7 +32,7 @@ data WACategory
     deriving (Eq, Ord, Read, Show)
 
 data FatherOrMother = Father | Mother
-    deriving (Eq, Ord, Read, Show, Bounded, Enum)
+    deriving (Eq, Ord, Read, Show)
 
 
 readWACategory :: String -> Maybe WACategory
