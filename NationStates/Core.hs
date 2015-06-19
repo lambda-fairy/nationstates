@@ -54,7 +54,7 @@ makeNS
     -> NS a
 makeNS name maybeId options parse = Compose
     (Query {
-        queryShards = Map.singleton name (Set.singleton <$> maybeId),
+        queryShards = Map.singleton name (Set.singleton maybeId),
         queryOptions = Map.fromList options
     }, parse)
 
@@ -84,23 +84,19 @@ Just initRequest = parseUrl "https://www.nationstates.net/cgi-bin/api.cgi"
 
 
 data Query = Query {
-    queryShards :: Map String (Maybe (Set Integer)),
+    queryShards :: Map String (Set (Maybe Integer)),
     queryOptions :: Map String String
     } deriving Show
 
 instance Monoid Query where
     mempty = Query mempty mempty
     mappend a b = Query {
-        queryShards = Map.unionWithKey mergeShards
+        queryShards = Map.unionWith Set.union
             (queryShards a) (queryShards b),
         queryOptions = Map.unionWithKey mergeOptions
             (queryOptions a) (queryOptions b)
         }
       where
-        mergeShards _ Nothing Nothing = Nothing
-        mergeShards _ (Just is) (Just is') = Just $ Set.union is is'
-        mergeShards name _ _
-            = error $ "conflicting requests for shard " ++ show name
         mergeOptions key _ _
             = error $ "conflicting values for option " ++ show key
 
@@ -108,11 +104,9 @@ instance Monoid Query where
 queryToUrl :: Query -> (String, String)
 queryToUrl q = (shards, options)
   where
-    shards = intercalate "+" [ fullName |
+    shards = intercalate "+" [ name ++ foldMap (\i -> "-" ++ show i) maybeId |
         (name, is) <- Map.toList $ queryShards q,
-        fullName <- case is of
-            Nothing -> [name]
-            Just is' -> [ name ++ "-" ++ show i | i <- Set.toList is' ] ]
+        maybeId <- Set.toList is ]
     options = concat [ ";" ++ k ++ "=" ++ v |
         (k, v) <- Map.toList $ queryOptions q ]
 
