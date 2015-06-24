@@ -1,15 +1,18 @@
+{-# LANGUAGE Rank2Types #-}
+
 module NationStates.Core (
 
     NS,
     makeNS,
     requestNS,
 
+    Context(..),
+
     Query(..),
     queryToUrl,
 
     simpleField,
     splitDropBlanks,
-    Manager,
 
     readMaybe,
     expect,
@@ -65,10 +68,11 @@ requestNS
         -- ^ Request type
     -> NS a
         -- ^ Set of shards to request
-    -> Manager
+    -> Context
     -> IO a
-requestNS kindAndName (Compose (q, Compose p)) man
-    = parse . responseBody <$> httpLbs req man
+requestNS kindAndName (Compose (q, Compose p)) c
+    = parse . responseBody <$>
+        (contextRateLimit c $ httpLbs req (contextManager c))
   where
     parse = p q . fromMaybe (error "invalid response") . parseXMLDoc
     req = initRequest {
@@ -81,6 +85,16 @@ requestNS kindAndName (Compose (q, Compose p)) man
 
 initRequest :: Request
 Just initRequest = parseUrl "https://www.nationstates.net/cgi-bin/api.cgi"
+
+
+-- | Keeps track of rate limits and TLS connections.
+--
+-- You should create a single 'Context' at the start of your program,
+-- then share it between multiple threads and requests.
+data Context = Context {
+    contextManager :: Manager,
+    contextRateLimit :: forall a. IO a -> IO a
+    }
 
 
 data Query = Query {

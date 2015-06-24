@@ -19,12 +19,14 @@ library
     exposed-modules:
         NationStates
         NationStates.Core
+        NationStates.RateLimit
         NationStates.Nation
     other-modules:
         NationStates.Types
     build-depends:
         base >= 4.8 && < 5,
         bytestring,
+        clock,
         containers,
         http-client,
         http-client-tls,

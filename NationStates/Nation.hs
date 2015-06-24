@@ -33,7 +33,7 @@ newtype Nation a = Nation { unNation :: NS a }
     deriving (Functor, Applicative)
 
 
-run :: String -> Nation a -> Manager -> IO a
+run :: String -> Nation a -> Context -> IO a
 run nation = requestNS (Just ("nation", nation)) . unNation
 
 
