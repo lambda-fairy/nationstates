@@ -1,4 +1,4 @@
-{-# LANGUAGE Rank2Types #-}
+{-# LANGUAGE OverloadedStrings, Rank2Types #-}
 
 -- | Low-level tools for querying the NationStates API.
 
@@ -125,7 +125,10 @@ requestNS kindAndName (Compose (q, Compose p)) c
         queryString
             = HTTP.renderQuery True (HTTP.toQuery $
                 toList kindAndName ++ [("q", shards)])
-            <> BC.pack options
+            <> BC.pack options,
+        requestHeaders
+            = ("User-Agent", BC.pack $ contextUserAgent c)
+            : requestHeaders initRequest
         }
     (shards, options) = queryToUrl q
 
@@ -139,7 +142,8 @@ Just initRequest = parseUrl "https://www.nationstates.net/cgi-bin/api.cgi"
 -- then share it between multiple threads and requests.
 data Context = Context {
     contextManager :: Manager,
-    contextRateLimit :: forall a. IO a -> IO a
+    contextRateLimit :: forall a. IO a -> IO a,
+    contextUserAgent :: String
     }
 
 
