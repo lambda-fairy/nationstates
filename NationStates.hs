@@ -17,6 +17,9 @@ import NationStates.RateLimit
 import NationStates.Types
 
 
+-- | Create a 'Context', and pass it to the provided function.
+--
+-- The 'Context' will be closed automatically when the function returns.
 withContext :: (Context -> IO a) -> IO a
 withContext f = withManager tlsManagerSettings $ \man -> do
     limit <- newRateLimit delay

@@ -1,23 +1,28 @@
 {-# LANGUAGE Rank2Types #-}
 
+-- | Low-level tools for querying the NationStates API.
+
 module NationStates.Core (
 
+    -- * Requests
     NS,
     makeNS,
+    simpleField,
     requestNS,
 
+    -- * Query strings
+    Query(..),
+
+    -- * Connection manager
     Context(..),
 
-    Query(..),
-    queryToUrl,
-
-    simpleField,
+    -- * Utilities
     splitDropBlanks,
-
     readMaybe,
     expect,
     expected,
 
+    -- * NationStates-specific types
     module NationStates.Types,
 
     ) where
@@ -42,6 +47,19 @@ import Text.XML.Light
 import NationStates.Types
 
 
+-- | A request to the NationStates API.
+--
+-- * Construct an @NS@ using 'makeNS' or 'simpleField'.
+-- * Compose @NS@ values using the 'Applicative' interface.
+-- * Execute an @NS@ using 'requestNS'.
+--
+-- This type wraps a query string, along with a function that parses the
+-- response. The funky type machinery keeps these two parts in sync, as
+-- long as you stick to the 'Applicative' interface.
+--
+-- @
+-- type NS a = ('Query', Query -> 'Element' -> a)
+-- @
 type NS = Compose ((,) Query) (Compose ((->) Query) ((->) Element))
 
 -- | Construct a request for a single shard.
@@ -69,6 +87,7 @@ requestNS
     -> NS a
         -- ^ Set of shards to request
     -> Context
+        -- ^ Connection manager
     -> IO a
 requestNS kindAndName (Compose (q, Compose p)) c
     = parse . responseBody <$>
@@ -97,6 +116,7 @@ data Context = Context {
     }
 
 
+-- | Keeps track of the set of shards to request.
 data Query = Query {
     queryShards :: Map String (Set (Maybe Integer)),
     queryOptions :: Map String String
@@ -125,18 +145,57 @@ queryToUrl q = (shards, options)
         (k, v) <- Map.toList $ queryOptions q ]
 
 
-simpleField :: String -> Maybe Integer -> String -> NS String
+-- | Construct a request for a single shard.
+--
+-- For example, this code requests the
+-- <https://www.nationstates.net/cgi-bin/api.cgi?nation=testlandia&q=motto "motto">
+-- shard:
+--
+-- @
+-- motto :: NS String
+-- motto = simpleField \"motto\" Nothing \"MOTTO\"
+-- @
+--
+-- For more complex requests (e.g. nested elements), try 'makeNS' instead.
+simpleField
+    :: String
+        -- ^ Shard name
+    -> Maybe Integer
+        -- ^ Shard ID
+    -> String
+        -- ^ XML element name
+    -> NS String
 simpleField shard maybeId elemName = makeNS shard maybeId [] parse
   where
     parse _ = strContent . fromMaybe errorMissing . findChild (unqual elemName)
     errorMissing = error $ "missing <" ++ elemName ++ "> element"
 
+
+-- | Split a string by a separator, dropping empty substrings.
+--
+-- >>> splitDropBlanks "," "the_vines,motesardo-east_adanzi,yellowapple"
+-- ["the_vines", "montesardo-east_adanzi", "yellowapple"]
+--
+-- >>> splitDropBlanks "," ""
+-- []
 splitDropBlanks :: Eq a => [a] -> [a] -> [[a]]
 splitDropBlanks = split . dropBlanks . dropDelims . onSublist
 
-
+-- | Parse an input string using the given parser function.
+--
+-- If parsing fails, raise an 'error'.
+--
+-- >>> expect "integer" readMaybe "42" :: Integer
+-- 42
+--
+-- >>> expect "integer" readMaybe "butts" :: Integer
+-- *** Exception: invalid integer: "butts"
 expect :: String -> (String -> Maybe a) -> String -> a
 expect want parse = fromMaybe <$> expected want <*> parse
 
+-- | Raise an 'error'.
+--
+-- >>> expected "integer" "butts"
+-- *** Exception: invalid integer: "butts"
 expected :: String -> String -> a
 expected want s = error $ "invalid " ++ want ++ ": " ++ show s

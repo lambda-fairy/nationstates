@@ -1,3 +1,5 @@
+-- | Simple rate limiting combinator.
+
 module NationStates.RateLimit (
     RateLimit(),
     newRateLimit,
@@ -15,6 +17,9 @@ data RateLimit = RateLimit {
     }
 
 
+-- | Create a new rate limiter with the specified delay.
+--
+-- The rate limiter is thread-safe, and can be shared between threads.
 newRateLimit :: TimeSpec -> IO RateLimit
 newRateLimit delay = do
     lock <- newMVar $! negate delay
@@ -24,6 +29,7 @@ newRateLimit delay = do
         }
 
 
+-- | Run the given action, pausing as necessary to keep under the rate limit.
 rateLimit :: RateLimit -> IO a -> IO a
 rateLimit RateLimit { rateLock = lock, rateDelay = delay } action =
     modifyMVar lock $ \prev -> do
