@@ -7,7 +7,7 @@ module NationStates.Core (
     -- * Requests
     NS,
     makeNS,
-    simpleField,
+    makeNS',
     requestNS,
 
     -- * Query strings
@@ -49,7 +49,7 @@ import NationStates.Types
 
 -- | A request to the NationStates API.
 --
--- * Construct an @NS@ using 'makeNS' or 'simpleField'.
+-- * Construct an @NS@ using 'makeNS' or 'makeNS''.
 -- * Compose @NS@ values using the 'Applicative' interface.
 -- * Execute an @NS@ using 'requestNS'.
 --
@@ -62,8 +62,35 @@ import NationStates.Types
 -- @
 type NS = Compose ((,) Query) (Compose ((->) Query) ((->) Element))
 
+
 -- | Construct a request for a single shard.
+--
+-- For example, this code requests the
+-- <https://www.nationstates.net/cgi-bin/api.cgi?nation=testlandia&q=motto "motto">
+-- shard:
+--
+-- @
+-- motto :: NS String
+-- motto = makeNS \"motto\" Nothing \"MOTTO\"
+-- @
+--
+-- For more complex requests (e.g. nested elements), try 'makeNS'' instead.
 makeNS
+    :: String
+        -- ^ Shard name
+    -> Maybe Integer
+        -- ^ Shard ID
+    -> String
+        -- ^ XML element name
+    -> NS String
+makeNS shard maybeId elemName = makeNS' shard maybeId [] parse
+  where
+    parse _ = strContent . fromMaybe errorMissing . findChild (unqual elemName)
+    errorMissing = error $ "missing <" ++ elemName ++ "> element"
+
+
+-- | Construct a request for a single shard.
+makeNS'
     :: String
         -- ^ Shard name
     -> Maybe Integer
@@ -73,7 +100,7 @@ makeNS
     -> (Query -> Element -> a)
         -- ^ Function for parsing the response
     -> NS a
-makeNS name maybeId options parse = Compose
+makeNS' name maybeId options parse = Compose
     (Query {
         queryShards = Map.singleton name (Set.singleton maybeId),
         queryOptions = Map.fromList options
@@ -143,32 +170,6 @@ queryToUrl q = (shards, options)
         maybeId <- Set.toList is ]
     options = concat [ ";" ++ k ++ "=" ++ v |
         (k, v) <- Map.toList $ queryOptions q ]
-
-
--- | Construct a request for a single shard.
---
--- For example, this code requests the
--- <https://www.nationstates.net/cgi-bin/api.cgi?nation=testlandia&q=motto "motto">
--- shard:
---
--- @
--- motto :: NS String
--- motto = simpleField \"motto\" Nothing \"MOTTO\"
--- @
---
--- For more complex requests (e.g. nested elements), try 'makeNS' instead.
-simpleField
-    :: String
-        -- ^ Shard name
-    -> Maybe Integer
-        -- ^ Shard ID
-    -> String
-        -- ^ XML element name
-    -> NS String
-simpleField shard maybeId elemName = makeNS shard maybeId [] parse
-  where
-    parse _ = strContent . fromMaybe errorMissing . findChild (unqual elemName)
-    errorMissing = error $ "missing <" ++ elemName ++ "> element"
 
 
 -- | Split a string by a separator, dropping empty substrings.

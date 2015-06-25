@@ -38,24 +38,24 @@ run nation = requestNS (Just ("nation", nation)) . unNation
 
 
 name :: Nation String
-name = Nation $ simpleField "name" Nothing "NAME"
+name = Nation $ makeNS "name" Nothing "NAME"
 
 fullname :: Nation String
-fullname = Nation $ simpleField "fullname" Nothing "FULLNAME"
+fullname = Nation $ makeNS "fullname" Nothing "FULLNAME"
 
 type_ :: Nation String
-type_ = Nation $ simpleField "type" Nothing "TYPE"
+type_ = Nation $ makeNS "type" Nothing "TYPE"
 
 motto :: Nation String
-motto = Nation $ simpleField "motto" Nothing "MOTTO"
+motto = Nation $ makeNS "motto" Nothing "MOTTO"
 
 category :: Nation WACategory
-category = Nation . fmap parse $ simpleField "category" Nothing "CATEGORY"
+category = Nation . fmap parse $ makeNS "category" Nothing "CATEGORY"
   where
     parse = expect "category" readWACategory
 
 wa :: Nation Bool
-wa = Nation . fmap parse $ simpleField "wa" Nothing "UNSTATUS"
+wa = Nation . fmap parse $ makeNS "wa" Nothing "UNSTATUS"
   where
     parse "WA Member" = True
     parse "Non-member" = False
@@ -63,19 +63,19 @@ wa = Nation . fmap parse $ simpleField "wa" Nothing "UNSTATUS"
 
 endorsements :: Nation [String]
 endorsements = Nation . fmap (splitDropBlanks ",") $
-    simpleField "endorsements" Nothing "ENDORSEMENTS"
+    makeNS "endorsements" Nothing "ENDORSEMENTS"
 
 gavote :: Nation (Maybe Bool)
 gavote = Nation . fmap (expect "General Assembly vote" readWAVote) $
-    simpleField "gavote" Nothing "GAVOTE"
+    makeNS "gavote" Nothing "GAVOTE"
 
 scvote :: Nation (Maybe Bool)
 scvote = Nation . fmap (expect "Security Council vote" readWAVote) $
-    simpleField "scvote" Nothing "SCVOTE"
+    makeNS "scvote" Nothing "SCVOTE"
 
 
 censusscore :: Nation (Integer, Double)
-censusscore = Nation $ makeNS "censusscore" Nothing [] parse
+censusscore = Nation $ makeNS' "censusscore" Nothing [] parse
   where
     parse q root = fromMaybe (error "could not find census score") $ do
         (i, _) <- MultiSet.minView $ MultiSet.difference response request
@@ -88,7 +88,7 @@ censusscore = Nation $ makeNS "censusscore" Nothing [] parse
         response = MultiSet.fromList $ map fst censusScores
 
 censusscore' :: Integer -> Nation Double
-censusscore' i = Nation $ makeNS "censusscore" (Just i) [] parse
+censusscore' i = Nation $ makeNS' "censusscore" (Just i) [] parse
   where
     parse _ = fromMaybe (error $ "could not find census " ++ show i) .
         lookup i . extractCensusScores
