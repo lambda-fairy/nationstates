@@ -35,8 +35,8 @@ rateLimit RateLimit { rateLock = lock, rateDelay = delay } action =
     modifyMVar lock $ \prev -> do
         now <- getTime Monotonic
         threadDelay' $ prev + delay - now
-        now' <- getTime Monotonic
         result <- action
+        now' <- getTime Monotonic
         return (now', result)
 
 
