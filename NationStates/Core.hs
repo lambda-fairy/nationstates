@@ -22,7 +22,7 @@ module NationStates.Core (
     expect,
     expected,
 
-    -- * NationStates-specific types
+    -- * Data structures
     module NationStates.Types,
 
     ) where

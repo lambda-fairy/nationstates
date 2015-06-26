@@ -1,6 +1,12 @@
+-- | Data structures used by NationStates.
+
 module NationStates.Types where
 
 
+-- | Nation category.
+--
+-- This category summarizes a nation's personal, economic, and political
+-- freedoms.
 data WACategory
     = Anarchy
     | AuthoritarianDemocracy
@@ -15,6 +21,8 @@ data WACategory
     | CorruptDictatorship
     | DemocraticSocialists
     | FatherKnowsBestState FatherOrMother
+        -- ^ This category has two variations: \"/Father/ Knows Best
+        -- State\" and \"/Mother/ Knows Best State\".
     | FreeMarketParadise
     | InoffensiveCentristDemocracy
     | IronFistConsumerists
@@ -31,6 +39,7 @@ data WACategory
     | TyrannyByMajority
     deriving (Eq, Ord, Read, Show)
 
+-- | Differentiates between a /Father/ or /Mother/ Knows Best State.
 data FatherOrMother = Father | Mother
     deriving (Eq, Ord, Read, Show)
 
