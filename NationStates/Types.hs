@@ -5,7 +5,7 @@ module NationStates.Types where
 
 -- | Nation category.
 --
--- This category summarizes a nation's personal, economic, and political
+-- This datum summarizes a nation's personal, economic, and political
 -- freedoms.
 data WACategory
     = Anarchy

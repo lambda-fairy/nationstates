@@ -1,6 +1,10 @@
 {-# LANGUAGE OverloadedStrings, Rank2Types #-}
 
 -- | Low-level tools for querying the NationStates API.
+--
+-- Most of the time, you should use the high-level wrappers in e.g.
+-- "NationStates.Nation" instead. But if you need something not provided
+-- by these wrappers, then feel free to use this module directly.
 
 module NationStates.Core (
 
