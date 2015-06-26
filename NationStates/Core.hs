@@ -9,6 +9,7 @@ module NationStates.Core (
     makeNS,
     makeNS',
     requestNS,
+    apiVersion,
 
     -- * Query strings
     Query(..),
@@ -124,7 +125,7 @@ requestNS kindAndName (Compose (q, Compose p)) c
     req = initRequest {
         queryString
             = HTTP.renderQuery True (HTTP.toQuery $
-                toList kindAndName ++ [("q", shards)])
+                toList kindAndName ++ [("q", shards), ("v", show apiVersion)])
             <> BC.pack options,
         requestHeaders
             = ("User-Agent", BC.pack $ contextUserAgent c)
@@ -134,6 +135,19 @@ requestNS kindAndName (Compose (q, Compose p)) c
 
 initRequest :: Request
 Just initRequest = parseUrl "https://www.nationstates.net/cgi-bin/api.cgi"
+
+
+-- | The version of the NationStates API used by this package.
+--
+-- Every request to NationStates includes this number. This means that
+-- if the response format changes, existing code will continue to work
+-- under the old API.
+--
+-- This number should match the current API version, as given by
+-- <https://www.nationstates.net/cgi-bin/api.cgi?a=version>. If not,
+-- please file an issue.
+apiVersion :: Integer
+apiVersion = 7
 
 
 -- | Keeps track of rate limits and TLS connections.
