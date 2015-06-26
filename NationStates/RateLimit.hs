@@ -8,6 +8,7 @@ module NationStates.RateLimit (
 
 
 import Control.Concurrent
+import Control.Exception
 import System.Clock
 
 
@@ -32,12 +33,13 @@ newRateLimit delay = do
 -- | Run the given action, pausing as necessary to keep under the rate limit.
 rateLimit :: RateLimit -> IO a -> IO a
 rateLimit RateLimit { rateLock = lock, rateDelay = delay } action =
-    modifyMVar lock $ \prev -> do
+    mask $ \restore -> do
+        prev <- takeMVar lock
         now <- getTime Monotonic
         threadDelay' $ prev + delay - now
-        result <- action
-        now' <- getTime Monotonic
-        return (now', result)
+        result <- restore action
+        putMVar lock =<< getTime Monotonic
+        return result
 
 
 threadDelay' :: TimeSpec -> IO ()
