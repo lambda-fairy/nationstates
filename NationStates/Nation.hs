@@ -43,6 +43,16 @@ module NationStates.Nation (
     endorsements,
     gavote,
     scvote,
+    freedom,
+    region,
+    population,
+    tax,
+    animal,
+    animaltrait,
+    currency,
+    flag,
+    banner,
+    banners,
 
     censusscore,
     censusscore',
@@ -103,9 +113,8 @@ motto = Nation $ makeNS "motto" Nothing "MOTTO"
 --
 -- > InoffensiveCentristDemocracy
 category :: Nation WACategory
-category = Nation . fmap parse $ makeNS "category" Nothing "CATEGORY"
-  where
-    parse = expect "category" readWACategory
+category = Nation . fmap (expect "category" readWACategory) $
+    makeNS "category" Nothing "CATEGORY"
 
 -- | Whether the nation is in the World Assembly.
 --
@@ -138,6 +147,80 @@ scvote :: Nation (Maybe Bool)
 scvote = Nation . fmap (expect "Security Council vote" readWAVote) $
     makeNS "scvote" Nothing "SCVOTE"
 
+-- | Description of civil rights, economy, and political freedoms.
+--
+-- > ("Excellent","Strong","Very Good")
+freedom :: Nation (String, String, String)
+freedom = Nation $ makeNS' "freedom" Nothing [] parse
+  where
+    parse _ root
+        | Just parent <- findChild (unqual "FREEDOM") root
+        , [c, e, p] <- map strContent $ elChildren parent
+            = (c, e, p)
+        | otherwise
+            = error "could not find freedom descriptors"
+
+-- | Resident region.
+--
+-- > "Testregionia"
+region :: Nation String
+region = Nation $ makeNS "region" Nothing "REGION"
+
+-- | Population, in millions.
+--
+-- > 25764
+population :: Nation Integer
+population = Nation . fmap (expect "population" readMaybe) $
+    makeNS "population" Nothing "POPULATION"
+
+-- | Income tax, percent.
+--
+-- > 83.6
+tax :: Nation Double
+tax = Nation . fmap (expect "tax" readMaybe) $
+    makeNS "tax" Nothing "TAX"
+
+-- | National animal.
+--
+-- > "sea-snake"
+animal :: Nation String
+animal = Nation $ makeNS "animal" Nothing "ANIMAL"
+
+-- | A short phrase describing the animal.
+--
+-- > "is also the nation's favorite main course"
+animaltrait :: Nation String
+animaltrait = Nation $ makeNS "animaltrait" Nothing "ANIMALTRAIT"
+
+-- | Currency.
+--
+-- > "☆star☆"
+currency :: Nation String
+currency = Nation $ makeNS "currency" Nothing "CURRENCY"
+
+-- | Flag URL.
+--
+-- > "http://www.nationstates.net/images/flags/Switzerland.png"
+flag :: Nation String
+flag = Nation $ makeNS "flag" Nothing "FLAG"
+
+-- | A suitable banner for this nation.
+--
+-- > "v1"
+banner :: Nation String
+banner = Nation $ makeNS "banner" Nothing "BANNER"
+
+-- | A list of suitable banners for this nation.
+--
+-- > ["v1","o4","b14","t23","m3"]
+banners :: Nation [String]
+banners = Nation $ makeNS' "banners" Nothing [] parse
+  where
+    parse _ root
+        | Just parent <- findChild (unqual "BANNERS") root
+            = map strContent $ elChildren parent
+        | otherwise
+            = error "could not find banner codes"
 
 -- | Query today's census.
 --
@@ -147,10 +230,12 @@ scvote = Nation . fmap (expect "Security Council vote" readWAVote) $
 censusscore :: Nation (Integer, Double)
 censusscore = Nation $ makeNS' "censusscore" Nothing [] parse
   where
-    parse q root = fromMaybe (error "could not find census score") $ do
-        (i, _) <- MultiSet.minView $ MultiSet.difference response request
-        x <- lookup i censusScores
-        return (i, x)
+    parse q root
+        | Just (i, _) <- MultiSet.minView $ MultiSet.difference response request
+        , Just x <- lookup i censusScores
+            = (i, x)
+        | otherwise
+            = error "could not find census score"
       where
         censusScores = extractCensusScores root
         request = MultiSet.mapMaybe id . MultiSet.fromSet $
