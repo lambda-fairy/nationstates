@@ -21,6 +21,7 @@ library
         NationStates.Core
         NationStates.RateLimit
         NationStates.Nation
+        NationStates.Region
     other-modules:
         NationStates.Types
     build-depends:
