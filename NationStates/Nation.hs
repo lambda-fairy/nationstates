@@ -89,38 +89,38 @@ run nation = requestNS (Just ("nation", nation)) . unNation
 --
 -- > "Testlandia"
 name :: Nation String
-name = Nation $ makeNS "name" Nothing "NAME"
+name = Nation $ makeNS "name" "NAME"
 
 -- | Full name, including pre-title.
 --
 -- > "The Republic of Testlandia"
 fullname :: Nation String
-fullname = Nation $ makeNS "fullname" Nothing "FULLNAME"
+fullname = Nation $ makeNS "fullname" "FULLNAME"
 
 -- | Nation type.
 --
 -- > "Republic"
 type_ :: Nation String
-type_ = Nation $ makeNS "type" Nothing "TYPE"
+type_ = Nation $ makeNS "type" "TYPE"
 
 -- | Motto.
 --
 -- > "It's a feature!"
 motto :: Nation String
-motto = Nation $ makeNS "motto" Nothing "MOTTO"
+motto = Nation $ makeNS "motto" "MOTTO"
 
 -- | Nation category.
 --
 -- > InoffensiveCentristDemocracy
 category :: Nation WACategory
 category = Nation . fmap (expect "category" readWACategory) $
-    makeNS "category" Nothing "CATEGORY"
+    makeNS "category" "CATEGORY"
 
 -- | Whether the nation is in the World Assembly.
 --
 -- > True
 wa :: Nation Bool
-wa = Nation . fmap parse $ makeNS "wa" Nothing "UNSTATUS"
+wa = Nation . fmap parse $ makeNS "wa" "UNSTATUS"
   where
     parse "WA Member" = True
     parse "Non-member" = False
@@ -131,21 +131,21 @@ wa = Nation . fmap parse $ makeNS "wa" Nothing "UNSTATUS"
 -- > ["jlink","translenia","the_vines"]
 endorsements :: Nation [String]
 endorsements = Nation . fmap (splitDropBlanks ",") $
-    makeNS "endorsements" Nothing "ENDORSEMENTS"
+    makeNS "endorsements" "ENDORSEMENTS"
 
 -- | General assembly vote.
 --
 -- > Just True
 gavote :: Nation (Maybe Bool)
 gavote = Nation . fmap (expect "General Assembly vote" readWAVote) $
-    makeNS "gavote" Nothing "GAVOTE"
+    makeNS "gavote" "GAVOTE"
 
 -- | Security council vote.
 --
 -- > Nothing
 scvote :: Nation (Maybe Bool)
 scvote = Nation . fmap (expect "Security Council vote" readWAVote) $
-    makeNS "scvote" Nothing "SCVOTE"
+    makeNS "scvote" "SCVOTE"
 
 -- | Description of civil rights, economy, and political freedoms.
 --
@@ -164,51 +164,51 @@ freedom = Nation $ makeNS' "freedom" Nothing [] parse
 --
 -- > "Testregionia"
 region :: Nation String
-region = Nation $ makeNS "region" Nothing "REGION"
+region = Nation $ makeNS "region" "REGION"
 
 -- | Population, in millions.
 --
 -- > 25764
 population :: Nation Integer
 population = Nation . fmap (expect "population" readMaybe) $
-    makeNS "population" Nothing "POPULATION"
+    makeNS "population" "POPULATION"
 
 -- | Income tax, percent.
 --
 -- > 83.6
 tax :: Nation Double
 tax = Nation . fmap (expect "tax" readMaybe) $
-    makeNS "tax" Nothing "TAX"
+    makeNS "tax" "TAX"
 
 -- | National animal.
 --
 -- > "sea-snake"
 animal :: Nation String
-animal = Nation $ makeNS "animal" Nothing "ANIMAL"
+animal = Nation $ makeNS "animal" "ANIMAL"
 
 -- | A short phrase describing the animal.
 --
 -- > "is also the nation's favorite main course"
 animaltrait :: Nation String
-animaltrait = Nation $ makeNS "animaltrait" Nothing "ANIMALTRAIT"
+animaltrait = Nation $ makeNS "animaltrait" "ANIMALTRAIT"
 
 -- | Currency.
 --
 -- > "☆star☆"
 currency :: Nation String
-currency = Nation $ makeNS "currency" Nothing "CURRENCY"
+currency = Nation $ makeNS "currency" "CURRENCY"
 
 -- | Flag URL.
 --
 -- > "http://www.nationstates.net/images/flags/Switzerland.png"
 flag :: Nation String
-flag = Nation $ makeNS "flag" Nothing "FLAG"
+flag = Nation $ makeNS "flag" "FLAG"
 
 -- | A suitable banner for this nation.
 --
 -- > "v1"
 banner :: Nation String
-banner = Nation $ makeNS "banner" Nothing "BANNER"
+banner = Nation $ makeNS "banner" "BANNER"
 
 -- | A list of suitable banners for this nation.
 --

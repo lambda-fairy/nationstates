@@ -83,12 +83,10 @@ type NS = Compose ((,) Query) (Compose ((->) Query) ((->) Element))
 makeNS
     :: String
         -- ^ Shard name
-    -> Maybe Integer
-        -- ^ Shard ID
     -> String
         -- ^ XML element name
     -> NS String
-makeNS shard maybeId elemName = makeNS' shard maybeId [] parse
+makeNS shard elemName = makeNS' shard Nothing [] parse
   where
     parse _ = strContent . fromMaybe errorMissing . findChild (unqual elemName)
     errorMissing = error $ "missing <" ++ elemName ++ "> element"
