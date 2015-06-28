@@ -2,6 +2,15 @@ machine:
   ghc:
     version: 7.10.1
 
+dependencies:
+  override:
+    - cabal update
+    - cabal install --only-dependencies --enable-documentation --haddock-hyperlink-source
+
+test:
+  override:
+    - cabal build
+
 deployment:
   push:
     branch: master
