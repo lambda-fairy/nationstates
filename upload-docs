@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+cabal haddock --hyperlink-source --html-location='https://hackage.haskell.org/package/$pkg-$version/docs'
+
+git config --global user.email 'nobody@example.com'
+git config --global user.name "$1"
+
+cd dist/doc/html/nationstates
+git init
+git add .
+git commit -m 'Deploy'
+
+git remote add github git@github.com:lfairy/nationstates.git
+git push -f github master:gh-pages

@@ -1,0 +1,9 @@
+machine:
+  ghc:
+    version: 7.10.1
+
+deployment:
+  push:
+    branch: master
+    commands:
+      - ./upload-docs 'Circle CI'
