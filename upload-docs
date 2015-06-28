@@ -2,12 +2,15 @@
 
 set -e
 
+CIRCLE_YML="$(readlink -f circle.yml)"
+
 cabal haddock --hyperlink-source --html-location='https://hackage.haskell.org/package/$pkg-$version/docs'
 
 git config --global user.email 'nobody@example.com'
 git config --global user.name "$1"
 
 cd dist/doc/html/nationstates
+cp "$CIRCLE_YML" .
 git init
 git add .
 git commit -m 'Deploy'
