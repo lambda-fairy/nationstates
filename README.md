@@ -8,11 +8,33 @@ This library lets you query this API using the Haskell programming language.
 [official API]: https://www.nationstates.net/pages/api.html
 
 
+## Features
+
+* **Type safe**: you can't refer to a shard unless you explicitly request it.
+
+* **Automatic rate limiting**, which can be disabled or overridden if you want.
+
+* **HTTP support** via the [tls] library.
+
+* **Free and open source** under the Apache License, version 2.0.
+
+[tls]: https://hackage.haskell.org/package/tls
+
+
 ## Dependencies
 
 * GHC 7.10
 
     + GHC 7.8 support is planned – patches welcome!
+
+
+## Installation
+
+`nationstates` is hosted on [Hackage].
+
+    cabal install nationstates
+
+[Hackage]: https://hackage.haskell.org/package/nationstates
 
 
 ## Example
