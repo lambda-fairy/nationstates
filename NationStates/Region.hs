@@ -53,6 +53,9 @@ module NationStates.Region (
     ) where
 
 
+import Control.Applicative
+import Prelude  -- GHC 7.10
+
 import NationStates.Core
 
 

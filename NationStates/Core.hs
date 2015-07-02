@@ -33,9 +33,10 @@ module NationStates.Core (
     ) where
 
 
+import Control.Applicative
 import qualified Data.ByteString.Char8 as BC
 import Data.Functor.Compose
-import Data.Foldable (toList)
+import qualified Data.Foldable as F
 import Data.List
 import Data.List.Split
 import Data.Monoid
@@ -48,6 +49,7 @@ import Network.HTTP.Client
 import qualified Network.HTTP.Types as HTTP
 import Text.Read
 import Text.XML.Light
+import Prelude  -- GHC 7.10
 
 import NationStates.Types
 
@@ -127,7 +129,7 @@ requestNS kindAndName (Compose (q, Compose p)) c
     req = initRequest {
         queryString
             = HTTP.renderQuery True (HTTP.toQuery $
-                toList kindAndName ++ [("q", shards), ("v", show apiVersion)])
+                F.toList kindAndName ++ [("q", shards), ("v", show apiVersion)])
             <> BC.pack options,
         requestHeaders
             = ("User-Agent", BC.pack $ contextUserAgent c)
@@ -185,7 +187,7 @@ instance Monoid Query where
 queryToUrl :: Query -> (String, String)
 queryToUrl q = (shards, options)
   where
-    shards = intercalate "+" [ name ++ foldMap (\i -> "-" ++ show i) maybeId |
+    shards = intercalate "+" [ name ++ F.foldMap (\i -> "-" ++ show i) maybeId |
         (name, is) <- Map.toList $ queryShards q,
         maybeId <- Set.toList is ]
     options = concat [ ";" ++ k ++ "=" ++ v |

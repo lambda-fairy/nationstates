@@ -93,10 +93,12 @@ module NationStates.Nation (
     ) where
 
 
+import Control.Applicative
 import Data.Maybe
 import qualified Data.Map as Map
 import qualified Data.MultiSet as MultiSet
 import Text.XML.Light
+import Prelude  -- GHC 7.10
 
 import NationStates.Core
 

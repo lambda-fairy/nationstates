@@ -23,9 +23,7 @@ This library lets you query this API using the Haskell programming language.
 
 ## Dependencies
 
-* GHC 7.10
-
-    + GHC 7.8 support is planned – patches welcome!
+* GHC 7.6 or newer
 
 
 ## Installation
