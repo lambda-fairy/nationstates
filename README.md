@@ -1,4 +1,4 @@
-# NationStates for Haskell
+# NationStates for Haskell [![Build Status](https://api.travis-ci.org/lfairy/nationstates.svg)](https://travis-ci.org/lfairy/nationstates)
 
 [NationStates] is an online government simulation game, created by Max Barry. The site generates a wealth of data, some of which can be accessed through its [official API].
 
