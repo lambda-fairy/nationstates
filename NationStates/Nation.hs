@@ -165,7 +165,7 @@ wa = Nation . fmap parse $ makeNS "wa" "UNSTATUS"
 --
 -- > ["jlink","translenia","the_vines"]
 endorsements :: Nation [String]
-endorsements = Nation . fmap (splitDropBlanks ",") $
+endorsements = Nation . fmap (wordsBy (== ',')) $
     makeNS "endorsements" "ENDORSEMENTS"
 
 -- | General assembly vote.

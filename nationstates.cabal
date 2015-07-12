@@ -32,7 +32,6 @@ library
         http-client-tls,
         http-types,
         multiset,
-        split,
         transformers,
         xml
     default-language: Haskell2010

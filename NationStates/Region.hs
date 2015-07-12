@@ -99,7 +99,7 @@ numnations = Region . fmap (expect "nation count" readMaybe) $
 --
 -- > ["urmanian","enatai","unfitting_doors","lykosia","trotterdam"]
 nations :: Region [String]
-nations = Region . fmap (splitDropBlanks ":") $ makeNS "nations" "NATIONS"
+nations = Region . fmap (wordsBy (== ':')) $ makeNS "nations" "NATIONS"
 
 -- | Region delegate.
 --

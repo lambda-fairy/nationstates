@@ -22,7 +22,7 @@ module NationStates.Core (
     Context(..),
 
     -- * Utilities
-    splitDropBlanks,
+    wordsBy,
     readMaybe,
     expect,
     expected,
@@ -38,7 +38,6 @@ import qualified Data.ByteString.Char8 as BC
 import Data.Functor.Compose
 import qualified Data.Foldable as F
 import Data.List
-import Data.List.Split
 import Data.Monoid
 import Data.Map (Map)
 import qualified Data.Map as Map
@@ -194,15 +193,19 @@ queryToUrl q = (shards, options)
         (k, v) <- Map.toList $ queryOptions q ]
 
 
--- | Split a string by a separator, dropping empty substrings.
+-- | Split a list by the given predicate, dropping empty sublists.
 --
--- >>> splitDropBlanks "," "the_vines,motesardo-east_adanzi,yellowapple"
+-- >>> wordsBy (== ',') "the_vines,motesardo-east_adanzi,yellowapple"
 -- ["the_vines", "montesardo-east_adanzi", "yellowapple"]
 --
--- >>> splitDropBlanks "," ""
+-- >>> wordsBy (== ',') ""
 -- []
-splitDropBlanks :: Eq a => [a] -> [a] -> [[a]]
-splitDropBlanks = split . dropBlanks . dropDelims . onSublist
+wordsBy :: (a -> Bool) -> [a] -> [[a]]
+wordsBy p s = case dropWhile p s of
+    [] -> []
+    s' ->
+        let (w, s'') = break p s'
+        in  w : wordsBy p s''
 
 -- | Parse an input string using the given parser function.
 --
