@@ -14,7 +14,7 @@ This library lets you query this API using the Haskell programming language.
 
 * **Automatic rate limiting**, which can be disabled or overridden if you want.
 
-* **HTTP support** via the [tls] library.
+* **HTTPS support** via the [tls] library.
 
 * **Free and open source** under the Apache License, version 2.0.
 
