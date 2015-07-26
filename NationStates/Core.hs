@@ -77,7 +77,7 @@ type NS = Compose ((,) Query) (Compose ((->) Query) ((->) Element))
 --
 -- @
 -- motto :: NS String
--- motto = makeNS \"motto\" Nothing \"MOTTO\"
+-- motto = makeNS \"motto\" \"MOTTO\"
 -- @
 --
 -- For more complex requests (e.g. nested elements), try 'makeNS'' instead.
