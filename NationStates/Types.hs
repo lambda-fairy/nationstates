@@ -108,14 +108,22 @@ showWACategory c = case c of
     TyrannyByMajority -> "Tyranny by Majority"
 
 
-readWAVote :: String -> Maybe (Maybe Bool)
+-- | A vote in the General Assembly or Security Council.
+--
+-- @Just True@ and @Just False@ mean \"for\" and \"against\"
+-- respectively, while @Nothing@ means that the nation did not vote at
+-- all.
+type WAVote = Maybe Bool
+
+
+readWAVote :: String -> Maybe WAVote
 readWAVote s = case s of
     "UNDECIDED" -> Just Nothing
     "FOR" -> Just $ Just True
     "AGAINST" -> Just $ Just False
     _ -> Nothing
 
-showWAVote :: Maybe Bool -> String
+showWAVote :: WAVote -> String
 showWAVote v = case v of
     Nothing -> "UNDECIDED"
     Just True -> "FOR"

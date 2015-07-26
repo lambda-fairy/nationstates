@@ -171,14 +171,14 @@ endorsements = Nation . fmap (wordsBy (== ',')) $
 -- | General assembly vote.
 --
 -- > Just True
-gavote :: Nation (Maybe Bool)
+gavote :: Nation WAVote
 gavote = Nation . fmap (expect "General Assembly vote" readWAVote) $
     makeNS "gavote" "GAVOTE"
 
 -- | Security council vote.
 --
 -- > Nothing
-scvote :: Nation (Maybe Bool)
+scvote :: Nation WAVote
 scvote = Nation . fmap (expect "Security Council vote" readWAVote) $
     makeNS "scvote" "SCVOTE"
 
