@@ -1,7 +1,7 @@
 module NationStates (
 
     Context(),
-    withContext,
+    newContext,
 
     -- * Core types
     module NationStates.Types,
@@ -17,17 +17,15 @@ import NationStates.RateLimit
 import NationStates.Types
 
 
--- | Create a 'Context', and pass it to the provided function.
---
--- The 'Context' will be closed automatically when the function returns.
-withContext
+-- | Create a new 'Context'.
+newContext
     :: String
         -- ^ User agent
-    -> (Context -> IO a)
-    -> IO a
-withContext userAgent f = withManager tlsManagerSettings $ \man -> do
+    -> IO Context
+newContext userAgent = do
+    man <- newManager tlsManagerSettings
     limit <- newRateLimit delay
-    f Context {
+    return Context {
         contextManager = man,
         contextRateLimit = rateLimit limit,
         contextUserAgent = userAgent

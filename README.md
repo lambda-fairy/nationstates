@@ -42,7 +42,8 @@ import NationStates
 import qualified NationStates.Nation as Nation
 import Text.Printf
 
-main = withContext "ExampleBot/2000" $ \c -> do
+main = do
+    c <- newContext "ExampleBot/2000"
     (name, motto) <- Nation.run "Montesardo-East Adanzi" shards c
     printf "%s has the motto: %s\n" name motto
   where

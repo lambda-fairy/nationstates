@@ -19,7 +19,8 @@
 -- import qualified NationStates.Region as Region
 -- import Text.Printf
 --
--- main = 'NationStates.withContext' "ExampleBot/2000" $ \\c -> do
+-- main = do
+--     c <- 'NationStates.newContext' "ExampleBot/2000"
 --     (name, numnations, delegate) <- Region.'run' "Pony Lands"
 --         ((,,) \<$\> Region.'name' \<*\> Region.'numnations' \<*\> Region.'delegate') c
 --     printf "%s has %d nations. Its delegate is %s\\n" name numnations delegate

@@ -21,7 +21,8 @@
 -- import qualified NationStates.Nation as Nation
 -- import Text.Printf
 --
--- main = 'NationStates.withContext' "ExampleBot/2000" $ \\c -> do
+-- main = do
+--     c <- 'NationStates.newContext' "ExampleBot/2000"
 --     (name, motto) <- Nation.'run' "Montesardo-East Adanzi"
 --         ((,) \<$\> Nation.'name' \<*\> Nation.'motto') c
 --     printf "%s has the motto: %s\\n" name motto
