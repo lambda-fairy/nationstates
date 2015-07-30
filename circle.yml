@@ -21,4 +21,4 @@ deployment:
   push:
     branch: master
     commands:
-      - ./upload-docs 'Circle CI'
+      - ./upload-docs nationstates git@github.com:lfairy/nationstates.git

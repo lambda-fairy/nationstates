@@ -2,18 +2,21 @@
 
 set -e
 
+PACKAGE_NAME="$1"
+REPO_URL="$2"
+
 CIRCLE_YML="$(readlink -f circle.yml)"
 
 cabal haddock --hyperlink-source --html-location='https://hackage.haskell.org/package/$pkg-$version/docs'
 
 git config --global user.email 'nobody@example.com'
-git config --global user.name "$1"
+git config --global user.name 'Circle CI'
 
-cd dist/doc/html/nationstates
+cd dist/doc/html/"$PACKAGE_NAME"
 cp "$CIRCLE_YML" .
 git init
 git add .
 git commit -m 'Deploy'
 
-git remote add github git@github.com:lfairy/nationstates.git
+git remote add github "$REPO_URL"
 git push -f github master:gh-pages
