@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+git clone https://github.com/haskell/haddock.git
+cd haddock
+
+cabal sandbox init
+cabal sandbox add-source haddock-api
+cabal sandbox add-source haddock-library
+
+cabal install

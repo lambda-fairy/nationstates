@@ -7,7 +7,14 @@ REPO_URL="$2"
 
 CIRCLE_YML="$(readlink -f circle.yml)"
 
-cabal haddock --hyperlink-source --html-location='https://hackage.haskell.org/package/$pkg-$version/docs'
+./install-haddock
+HADDOCK="$(readlink -f haddock/.cabal-sandbox/bin/haddock)"
+
+cabal haddock \
+    --with-haddock="$HADDOCK" \
+    --haddock-options=--pretty-html \
+    --haddock-options=--hyperlinked-source \
+    --html-location='https://hackage.haskell.org/package/$pkg-$version/docs'
 
 git config --global user.email 'nobody@example.com'
 git config --global user.name 'Circle CI'
