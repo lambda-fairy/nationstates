@@ -10,7 +10,7 @@
 -- @
 --
 -- In general, this module follows the terminology used in the
--- <https://www.nationstates.net/pages/api.html#nationapi official documentation>.
+-- <https://www.nationstates.net/pages/api.html#regionapi official documentation>.
 --
 -- Here's a short example:
 --
