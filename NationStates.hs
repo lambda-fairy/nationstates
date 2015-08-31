@@ -24,11 +24,9 @@ newContext
     -> IO Context
 newContext userAgent = do
     man <- newManager tlsManagerSettings
-    limit <- newRateLimit delay
+    limit <- newRateLimit 0.6
     return Context {
         contextManager = man,
         contextRateLimit = rateLimit limit,
         contextUserAgent = userAgent
         }
-  where
-    delay = fromInteger $ 600 * 1000 * 1000  -- 0.6 seconds

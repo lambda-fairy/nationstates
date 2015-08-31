@@ -21,13 +21,18 @@ data RateLimit = RateLimit {
 -- | Create a new rate limiter with the specified delay.
 --
 -- The rate limiter is thread-safe, and can be shared between threads.
-newRateLimit :: TimeSpec -> IO RateLimit
-newRateLimit delay = do
+newRateLimit
+    :: Rational
+        -- ^ Delay, in seconds
+    -> IO RateLimit
+newRateLimit delay' = do
     lock <- newMVar $! negate delay
     return RateLimit {
         rateLock = lock,
         rateDelay = delay
         }
+  where
+    delay = fromInteger . ceiling $ delay' * 1000 * 1000 * 1000
 
 
 -- | Run the given action, pausing as necessary to keep under the rate limit.
