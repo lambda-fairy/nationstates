@@ -38,13 +38,13 @@ newRateLimit delay' = do
 -- | Run the given action, pausing as necessary to keep under the rate limit.
 rateLimit :: RateLimit -> IO a -> IO a
 rateLimit RateLimit { rateLock = lock, rateDelay = delay } action =
-    mask $ \restore -> do
-        prev <- takeMVar lock
-        now <- getTime Monotonic
-        threadDelay' $ prev + delay - now
-        result <- restore action
-        putMVar lock =<< getTime Monotonic
-        return result
+    bracketOnError
+        (takeMVar lock)
+        (tryPutMVar lock)
+        (\prev -> do
+            now <- getTime Monotonic
+            threadDelay' $ prev + delay - now
+            action `finally` (putMVar lock =<< getTime Monotonic))
 
 
 threadDelay' :: TimeSpec -> IO ()
