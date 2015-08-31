@@ -31,4 +31,4 @@ newContext userAgent = do
         contextUserAgent = userAgent
         }
   where
-    delay = 600 * 1000 * 1000  -- 0.6 seconds
+    delay = fromInteger $ 600 * 1000 * 1000  -- 0.6 seconds
