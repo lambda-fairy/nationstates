@@ -8,12 +8,12 @@ module NationStates.RateLimit (
 
 
 import Control.Concurrent
-import Control.Exception
+import Data.IORef
 import System.Clock
 
 
 data RateLimit = RateLimit {
-    rateLock :: !(MVar TimeSpec),
+    rateLock :: !(MVar (IORef TimeSpec)),
     rateDelay :: !TimeSpec
     }
 
@@ -26,7 +26,8 @@ newRateLimit
         -- ^ Delay, in seconds
     -> IO RateLimit
 newRateLimit delay' = do
-    lock <- newMVar $! negate delay
+    time <- newIORef $! negate delay
+    lock <- newMVar $! ref
     return RateLimit {
         rateLock = lock,
         rateDelay = delay
@@ -38,13 +39,13 @@ newRateLimit delay' = do
 -- | Run the given action, pausing as necessary to keep under the rate limit.
 rateLimit :: RateLimit -> IO a -> IO a
 rateLimit RateLimit { rateLock = lock, rateDelay = delay } action =
-    bracketOnError
-        (takeMVar lock)
-        (tryPutMVar lock)
-        (\prev -> do
-            now <- getTime Monotonic
-            threadDelay' $ prev + delay - now
-            action `finally` (putMVar lock =<< getTime Monotonic))
+    withMVar lock $ \time -> do
+        prev <- readIORef time
+        now <- getTime Monotonic
+        threadDelay' $ prev + delay - now
+        result <- action
+        writeIORef time =<< getTime Monotonic
+        return result
 
 
 threadDelay' :: TimeSpec -> IO ()
