@@ -38,12 +38,12 @@ module NationStates.Region (
     numnations,
     nations,
     delegate,
---    delegatevote,
+    delegatevotes,
 --    gavote,
 --    scvote,
---    founder,
---    power,
---    flag,
+    founder,
+    power,
+    flag,
 --    embassies,
 --    tags,
 --    happenings,
@@ -107,3 +107,28 @@ nations = Region . fmap (wordsBy (== ':')) $ makeNS "nations" "NATIONS"
 -- > "princess_luna"
 delegate :: Region String
 delegate = Region $ makeNS "delegate" "DELEGATE"
+
+-- | The number of endorsements earned by the delegate.
+--
+-- > 22
+delegatevotes :: Region Integer
+delegatevotes = Region . fmap (expect "delegate endorsement count" readMaybe) $
+    makeNS "delegatevotes" "DELEGATEVOTES"
+
+-- | Region founder.
+--
+-- > "magical_equestria"
+founder :: Region String
+founder = Region $ makeNS "founder" "FOUNDER"
+
+-- | Regional power.
+--
+-- > "High"
+power :: Region String
+power = Region $ makeNS "power" "POWER"
+
+-- | Regional flag.
+--
+-- > "http://www.nationstates.net/images/flags/uploads/rflags/pony_lands__478033.png"
+flag :: Region String
+flag = Region $ makeNS "flag" "FLAG"
