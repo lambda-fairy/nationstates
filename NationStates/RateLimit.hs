@@ -8,6 +8,7 @@ module NationStates.RateLimit (
 
 
 import Control.Concurrent
+import Control.Exception
 import Data.IORef
 import System.Clock
 
@@ -27,7 +28,7 @@ newRateLimit
     -> IO RateLimit
 newRateLimit delay' = do
     time <- newIORef $! negate delay
-    lock <- newMVar $! ref
+    lock <- newMVar time
     return RateLimit {
         rateLock = lock,
         rateDelay = delay
@@ -43,8 +44,7 @@ rateLimit RateLimit { rateLock = lock, rateDelay = delay } action =
         prev <- readIORef time
         now <- getTime Monotonic
         threadDelay' $ prev + delay - now
-        result <- action
-        writeIORef time =<< getTime Monotonic
+        result <- action `finally` (writeIORef time =<< getTime Monotonic)
         return result
 
 
