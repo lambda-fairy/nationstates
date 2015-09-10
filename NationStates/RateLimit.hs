@@ -40,7 +40,7 @@ rateLimit :: RateLimit -> IO a -> IO a
 rateLimit RateLimit { rateLock = lock, rateDelay = delay } action =
     bracketOnError
         (takeMVar lock)
-        (tryPutMVar lock)
+        (putMVar lock)
         (\prev -> do
             now <- getTime Monotonic
             threadDelay' $ prev + delay - now
