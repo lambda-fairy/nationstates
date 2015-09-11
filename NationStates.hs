@@ -2,6 +2,7 @@ module NationStates (
 
     Context(),
     newContext,
+    newContext',
 
     -- * Core types
     module NationStates.Types,
@@ -22,11 +23,25 @@ newContext
     :: String
         -- ^ User agent
     -> IO Context
-newContext userAgent = do
-    man <- newManager tlsManagerSettings
+newContext userAgent = newContext' userAgent False
+
+
+-- | Create a new 'Context', with extra options.
+newContext'
+    :: String
+        -- ^ User agent
+    -> Bool
+        -- ^ Use HTTPS (experimental)
+    -> IO Context
+newContext' userAgent isSecure = do
+    man <- newManager $
+        if isSecure
+            then tlsManagerSettings
+            else defaultManagerSettings
     limit <- newRateLimit 0.6
     return Context {
         contextManager = man,
         contextRateLimit = rateLimit limit,
+        contextIsSecure = isSecure,
         contextUserAgent = userAgent
         }

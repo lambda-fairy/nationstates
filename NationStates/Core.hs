@@ -132,12 +132,13 @@ requestNS kindAndName (Compose (q, Compose p)) c
             <> BC.pack options,
         requestHeaders
             = ("User-Agent", BC.pack $ contextUserAgent c)
-            : requestHeaders initRequest
+            : requestHeaders initRequest,
+        secure = contextIsSecure c
         }
     (shards, options) = queryToUrl q
 
 initRequest :: Request
-Just initRequest = parseUrl "https://www.nationstates.net/cgi-bin/api.cgi"
+Just initRequest = parseUrl "http://www.nationstates.net/cgi-bin/api.cgi"
 
 
 -- | The version of the NationStates API used by this package.
@@ -160,6 +161,7 @@ apiVersion = 7
 data Context = Context {
     contextManager :: Manager,
     contextRateLimit :: forall a. IO a -> IO a,
+    contextIsSecure :: Bool,
     contextUserAgent :: String
     }
 
