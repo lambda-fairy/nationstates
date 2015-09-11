@@ -44,8 +44,8 @@ module NationStates.Region (
     founder,
     power,
     flag,
---    embassies,
---    tags,
+    embassies,
+    tags,
 --    happenings,
 --    messages,
 --    history,
@@ -55,6 +55,7 @@ module NationStates.Region (
 
 
 import Control.Applicative
+import Text.XML.Light
 import Prelude  -- GHC 7.10
 
 import NationStates.Core
@@ -93,7 +94,7 @@ factbook = Region $ makeNS "factbook" "FACTBOOK"
 --
 -- > 112
 numnations :: Region Integer
-numnations = Region . fmap (expect "nation count" readMaybe) $
+numnations = Region . fmap (expect "nation count" <*> readMaybe) $
     makeNS "numnations" "NUMNATIONS"
 
 -- | List of nations in the region.
@@ -116,7 +117,7 @@ delegate = Region . fmap (pureIf (/= "0")) $ makeNS "delegate" "DELEGATE"
 --
 -- > 22
 delegatevotes :: Region Integer
-delegatevotes = Region . fmap (expect "delegate endorsement count" readMaybe) $
+delegatevotes = Region . fmap (expect "delegate vote count" <*> readMaybe) $
     makeNS "delegatevotes" "DELEGATEVOTES"
 
 -- | Region founder.
@@ -138,3 +139,25 @@ power = Region $ makeNS "power" "POWER"
 -- > "http://www.nationstates.net/images/flags/uploads/rflags/pony_lands__478033.png"
 flag :: Region String
 flag = Region $ makeNS "flag" "FLAG"
+
+-- | Region embassies.
+--
+-- > ["New Lunar Republic","Tareldanore"]
+embassies :: Region [String]
+embassies = Region $ makeNS' "embassies" Nothing [] parse
+  where
+    parse _ =
+        expect "embassy names" <$> showElement <*> extractChildren "EMBASSIES"
+
+-- | Region tags.
+--
+-- > ["Silly","Monarchist","Large"]
+tags :: Region [String]
+tags = Region $ makeNS' "tags" Nothing [] parse
+  where
+    parse _ =
+        expect "region tags" <$> showElement <*> extractChildren "TAGS"
+
+extractChildren :: String -> Element -> Maybe [String]
+extractChildren parentName =
+    fmap (map strContent . elChildren) . findChild (unqual parentName)

@@ -149,7 +149,7 @@ motto = Nation $ makeNS "motto" "MOTTO"
 --
 -- > InoffensiveCentristDemocracy
 category :: Nation WACategory
-category = Nation . fmap (expect "category" readWACategory) $
+category = Nation . fmap (expect "category" <*> readWACategory) $
     makeNS "category" "CATEGORY"
 
 -- | Whether the nation is in the World Assembly.
@@ -173,14 +173,14 @@ endorsements = Nation . fmap (wordsBy (== ',')) $
 --
 -- > Just True
 gavote :: Nation WAVote
-gavote = Nation . fmap (expect "General Assembly vote" readWAVote) $
+gavote = Nation . fmap (expect "General Assembly vote" <*> readWAVote) $
     makeNS "gavote" "GAVOTE"
 
 -- | Security council vote.
 --
 -- > Nothing
 scvote :: Nation WAVote
-scvote = Nation . fmap (expect "Security Council vote" readWAVote) $
+scvote = Nation . fmap (expect "Security Council vote" <*> readWAVote) $
     makeNS "scvote" "SCVOTE"
 
 -- | Description of civil rights, economy, and political freedoms.
@@ -206,14 +206,14 @@ region = Nation $ makeNS "region" "REGION"
 --
 -- > 25764
 population :: Nation Integer
-population = Nation . fmap (expect "population" readMaybe) $
+population = Nation . fmap (expect "population" <*> readMaybe) $
     makeNS "population" "POPULATION"
 
 -- | Income tax, percent.
 --
 -- > 83.6
 tax :: Nation Double
-tax = Nation . fmap (expect "tax" readMaybe) $
+tax = Nation . fmap (expect "tax" <*> readMaybe) $
     makeNS "tax" "TAX"
 
 -- | National animal.

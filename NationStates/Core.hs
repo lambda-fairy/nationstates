@@ -212,20 +212,20 @@ wordsBy p s = case dropWhile p s of
 --
 -- If parsing fails, raise an 'error'.
 --
--- >>> expect "integer" readMaybe "42" :: Integer
+-- >>> (expect "integer" <*> readMaybe) "42" :: Integer
 -- 42
 --
--- >>> expect "integer" readMaybe "butts" :: Integer
--- *** Exception: invalid integer: "butts"
-expect :: String -> (String -> Maybe a) -> String -> a
-expect want parse = fromMaybe <$> expected want <*> parse
+-- >>> (expect "integer" <*> readMaybe) "butts" :: Integer
+-- *** Exception: expected integer but got: butts
+expect :: String -> String -> Maybe a -> a
+expect want got = fromMaybe (expected want got)
 
 -- | Raise an 'error'.
 --
 -- >>> expected "integer" "butts"
--- *** Exception: invalid integer: "butts"
+-- *** Exception: expected integer but got: butts
 expected :: String -> String -> a
-expected want s = error $ "invalid " ++ want ++ ": " ++ show s
+expected want got = error $ "expected " ++ want ++ " but got: " ++ got
 
 -- | Return the value only if the given predicate is true.
 --
