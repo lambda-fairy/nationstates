@@ -39,8 +39,8 @@ module NationStates.Region (
     nations,
     delegate,
     delegatevotes,
---    gavote,
---    scvote,
+    gavote,
+    scvote,
     founder,
     power,
     flag,
@@ -55,6 +55,7 @@ module NationStates.Region (
 
 
 import Control.Applicative
+import Control.Monad
 import Text.XML.Light
 import Prelude  -- GHC 7.10
 
@@ -120,6 +121,31 @@ delegatevotes :: Region Integer
 delegatevotes = Region . fmap (expect "delegate vote count" <*> readMaybe) $
     makeNS "delegatevotes" "DELEGATEVOTES"
 
+-- | The number of votes for and against the current General Assembly
+-- resolution.
+--
+-- > (28,11)
+gavote :: Region (Integer, Integer)
+gavote = Region $ makeNS' "gavote" Nothing [] parse
+  where
+    parse _ = expect "GA vote counts" <$> showElement <*>
+        (grabVotes <=< findChild (unqual "GAVOTE"))
+
+-- | The number of votes for and against the current Security Council
+-- resolution.
+--
+-- > (20,34)
+scvote :: Region (Integer, Integer)
+scvote = Region $ makeNS' "scvote" Nothing [] parse
+  where
+    parse _ = expect "SC vote counts" <$> showElement <*>
+        (grabVotes <=< findChild (unqual "SCVOTE"))
+
+grabVotes :: Element -> Maybe (Integer, Integer)
+grabVotes root = (,)
+    <$> (readMaybe . strContent =<< findChild (unqual "FOR") root)
+    <*> (readMaybe . strContent =<< findChild (unqual "AGAINST") root)
+
 -- | Region founder.
 --
 -- Returns @Nothing@ when the region is founderless.
@@ -147,7 +173,7 @@ embassies :: Region [String]
 embassies = Region $ makeNS' "embassies" Nothing [] parse
   where
     parse _ = expect "embassy names" <$> showElement <*>
-        grabChildren "EMBASSIES" "EMBASSY"
+        fmap (grabChildren "EMBASSY") . findChild (unqual "EMBASSIES")
 
 -- | Region tags.
 --
@@ -156,12 +182,7 @@ tags :: Region [String]
 tags = Region $ makeNS' "tags" Nothing [] parse
   where
     parse _ = expect "region tags" <$> showElement <*>
-        grabChildren "TAGS" "TAG"
+        fmap (grabChildren "TAG") . findChild (unqual "TAGS")
 
-grabChildren :: String -> String -> Element -> Maybe [String]
-grabChildren parentName childName =
-    fmap process . findChild (unqual parentName)
-  where
-    process parent = [ strContent child |
-        child <- elChildren parent,
-        elName child == unqual childName ]
+grabChildren :: String -> Element -> [String]
+grabChildren childName = map strContent . findChildren (unqual childName)
