@@ -104,11 +104,15 @@ nations = Region . fmap (wordsBy (== ':')) $ makeNS "nations" "NATIONS"
 
 -- | Region delegate.
 --
--- > "princess_luna"
-delegate :: Region String
-delegate = Region $ makeNS "delegate" "DELEGATE"
+-- Returns @Nothing@ when the region has no delegate.
+--
+-- > Just "princess_luna"
+delegate :: Region (Maybe String)
+delegate = Region . fmap (pureIf (/= "0")) $ makeNS "delegate" "DELEGATE"
 
 -- | The number of endorsements earned by the delegate.
+--
+-- Returns @0@ when the region has no delegate.
 --
 -- > 22
 delegatevotes :: Region Integer
@@ -117,9 +121,11 @@ delegatevotes = Region . fmap (expect "delegate endorsement count" readMaybe) $
 
 -- | Region founder.
 --
--- > "magical_equestria"
-founder :: Region String
-founder = Region $ makeNS "founder" "FOUNDER"
+-- Returns @Nothing@ when the region is founderless.
+--
+-- > Just "magical_equestria"
+founder :: Region (Maybe String)
+founder = Region . fmap (pureIf (/= "0")) $ makeNS "founder" "FOUNDER"
 
 -- | Regional power.
 --

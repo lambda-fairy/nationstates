@@ -26,6 +26,7 @@ module NationStates.Core (
     readMaybe,
     expect,
     expected,
+    pureIf,
 
     -- * Data structures
     module NationStates.Types,
@@ -225,3 +226,13 @@ expect want parse = fromMaybe <$> expected want <*> parse
 -- *** Exception: invalid integer: "butts"
 expected :: String -> String -> a
 expected want s = error $ "invalid " ++ want ++ ": " ++ show s
+
+-- | Return the value only if the given predicate is true.
+--
+-- >>> pureIf (> 0) 5 :: Maybe Integer
+-- Just 5
+--
+-- >>> pureIf (> 0) (-2) :: Maybe Integer
+-- Nothing
+pureIf :: Alternative f => (a -> Bool) -> a -> f a
+pureIf p x = if p x then pure x else empty
