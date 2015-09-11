@@ -146,8 +146,8 @@ flag = Region $ makeNS "flag" "FLAG"
 embassies :: Region [String]
 embassies = Region $ makeNS' "embassies" Nothing [] parse
   where
-    parse _ =
-        expect "embassy names" <$> showElement <*> extractChildren "EMBASSIES"
+    parse _ = expect "embassy names" <$> showElement <*>
+        grabChildren "EMBASSIES" "EMBASSY"
 
 -- | Region tags.
 --
@@ -155,9 +155,13 @@ embassies = Region $ makeNS' "embassies" Nothing [] parse
 tags :: Region [String]
 tags = Region $ makeNS' "tags" Nothing [] parse
   where
-    parse _ =
-        expect "region tags" <$> showElement <*> extractChildren "TAGS"
+    parse _ = expect "region tags" <$> showElement <*>
+        grabChildren "TAGS" "TAG"
 
-extractChildren :: String -> Element -> Maybe [String]
-extractChildren parentName =
-    fmap (map strContent . elChildren) . findChild (unqual parentName)
+grabChildren :: String -> String -> Element -> Maybe [String]
+grabChildren parentName childName =
+    fmap process . findChild (unqual parentName)
+  where
+    process parent = [ strContent child |
+        child <- elChildren parent,
+        elName child == unqual childName ]
