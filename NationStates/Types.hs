@@ -128,3 +128,15 @@ showWAVote v = case v of
     Nothing -> "UNDECIDED"
     Just True -> "FOR"
     Just False -> "AGAINST"
+
+
+readWAStatus :: String -> Maybe Bool
+readWAStatus s = case s of
+    "WA Member" -> Just True
+    "Non-member" -> Just False
+    _ -> Nothing
+
+showWAStatus :: Bool -> String
+showWAStatus v = case v of
+    True -> "WA Member"
+    False -> "Non-member"

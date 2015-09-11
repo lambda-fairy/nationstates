@@ -156,11 +156,7 @@ category = Nation . fmap (expect "category" <*> readWACategory) $
 --
 -- > True
 wa :: Nation Bool
-wa = Nation . fmap parse $ makeNS "wa" "UNSTATUS"
-  where
-    parse "WA Member" = True
-    parse "Non-member" = False
-    parse s = expected "WA status" s
+wa = Nation . fmap (expect "WA status" <*> readWAStatus) $ makeNS "wa" "UNSTATUS"
 
 -- | List of endorsements received.
 --

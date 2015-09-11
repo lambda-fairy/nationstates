@@ -25,7 +25,6 @@ module NationStates.Core (
     wordsBy,
     readMaybe,
     expect,
-    expected,
     pureIf,
 
     -- * Data structures
@@ -218,14 +217,7 @@ wordsBy p s = case dropWhile p s of
 -- >>> (expect "integer" <*> readMaybe) "butts" :: Integer
 -- *** Exception: expected integer but got: butts
 expect :: String -> String -> Maybe a -> a
-expect want got = fromMaybe (expected want got)
-
--- | Raise an 'error'.
---
--- >>> expected "integer" "butts"
--- *** Exception: expected integer but got: butts
-expected :: String -> String -> a
-expected want got = error $ "expected " ++ want ++ " but got: " ++ got
+expect want got = fromMaybe (error $ "expected " ++ want ++ " but got: " ++ got)
 
 -- | Return the value only if the given predicate is true.
 --
