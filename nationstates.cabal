@@ -9,6 +9,7 @@ author: Chris Wong
 maintainer: lambda.fairy@gmail.com
 copyright: 2015 Chris Wong
 license: Apache-2.0
+license-file: LICENSE
 category: Network, Web
 
 build-type: Simple
