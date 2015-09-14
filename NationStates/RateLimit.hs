@@ -4,6 +4,7 @@ module NationStates.RateLimit (
     RateLimit(),
     newRateLimit,
     rateLimit,
+    setDelay,
     ) where
 
 
@@ -29,7 +30,7 @@ newRateLimit delay' = do
     lock <- newMVar $! negate delay
     return $ RateLimit lock delay
   where
-    delay = fromInteger . ceiling $ delay' * 1000 * 1000 * 1000
+    delay = fromSeconds delay'
 
 
 -- | Run the given action, pausing as necessary to keep under the rate limit.
@@ -44,3 +45,12 @@ rateLimit (RateLimit lock delay) action =
 
 threadDelay' :: TimeSpec -> IO ()
 threadDelay' t = threadDelay . fromInteger $ timeSpecAsNanoSecs t `div` 1000
+
+
+-- | Create a new rate limiter with the same lock but a different delay.
+setDelay :: Rational -> RateLimit -> RateLimit
+setDelay delay' (RateLimit lock _) = RateLimit lock (fromSeconds delay')
+
+
+fromSeconds :: Rational -> TimeSpec
+fromSeconds n = fromInteger . ceiling $ n * 1000 * 1000 * 1000
