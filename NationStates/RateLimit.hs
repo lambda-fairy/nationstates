@@ -13,8 +13,8 @@ import System.Clock
 
 
 data RateLimit = RateLimit {
-    rateLock :: !(MVar TimeSpec),
-    rateDelay :: !TimeSpec
+    _rateLock :: !(MVar TimeSpec),
+    _rateDelay :: !TimeSpec
     }
 
 
@@ -27,17 +27,14 @@ newRateLimit
     -> IO RateLimit
 newRateLimit delay' = do
     lock <- newMVar $! negate delay
-    return RateLimit {
-        rateLock = lock,
-        rateDelay = delay
-        }
+    return $ RateLimit lock delay
   where
     delay = fromInteger . ceiling $ delay' * 1000 * 1000 * 1000
 
 
 -- | Run the given action, pausing as necessary to keep under the rate limit.
 rateLimit :: RateLimit -> IO a -> IO a
-rateLimit RateLimit { rateLock = lock, rateDelay = delay } action =
+rateLimit (RateLimit lock delay) action =
     mask $ \restore -> do
         prev <- takeMVar lock
         now <- getTime Monotonic
