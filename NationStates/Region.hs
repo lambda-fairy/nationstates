@@ -162,9 +162,9 @@ power = Region $ makeNS "power" "POWER"
 
 -- | Regional flag.
 --
--- > "http://www.nationstates.net/images/flags/uploads/rflags/pony_lands__478033.png"
-flag :: Region String
-flag = Region $ makeNS "flag" "FLAG"
+-- > Just "http://www.nationstates.net/images/flags/uploads/rflags/pony_lands__478033.png"
+flag :: Region (Maybe String)
+flag = Region . fmap (pureIf (/= "")) $ makeNS "flag" "FLAG"
 
 -- | Region embassies.
 --
