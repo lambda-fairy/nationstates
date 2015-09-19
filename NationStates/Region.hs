@@ -124,22 +124,26 @@ delegatevotes = Region . fmap (expect "delegate vote count" <*> readMaybe) $
 -- | The number of votes for and against the current General Assembly
 -- resolution.
 --
--- > (28,11)
-gavote :: Region (Integer, Integer)
+-- Returns @Nothing@ when there is no proposal at vote.
+--
+-- > Just (28,11)
+gavote :: Region (Maybe (Integer, Integer))
 gavote = Region $ makeNS' "gavote" Nothing [] parse
   where
     parse _ = expect "GA vote counts" <$> showElement <*>
-        (grabVotes <=< findChild (unqual "GAVOTE"))
+        (fmap grabVotes . findChild (unqual "GAVOTE"))
 
 -- | The number of votes for and against the current Security Council
 -- resolution.
 --
--- > (20,34)
-scvote :: Region (Integer, Integer)
+-- Returns @Nothing@ when there is no proposal at vote.
+--
+-- > Just (20,34)
+scvote :: Region (Maybe (Integer, Integer))
 scvote = Region $ makeNS' "scvote" Nothing [] parse
   where
     parse _ = expect "SC vote counts" <$> showElement <*>
-        (grabVotes <=< findChild (unqual "SCVOTE"))
+        (fmap grabVotes . findChild (unqual "SCVOTE"))
 
 grabVotes :: Element -> Maybe (Integer, Integer)
 grabVotes root = (,)
