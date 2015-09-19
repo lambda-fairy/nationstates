@@ -133,6 +133,7 @@ requestNS kindAndName (Compose (q, Compose p)) c
         requestHeaders
             = ("User-Agent", BC.pack $ contextUserAgent c)
             : requestHeaders initRequest,
+        port = if contextIsSecure c then 443 else 80,
         secure = contextIsSecure c
         }
     (shards, options) = queryToUrl q
