@@ -131,7 +131,7 @@ gavote :: Region (Maybe (Integer, Integer))
 gavote = Region $ makeNS' "gavote" Nothing [] parse
   where
     parse _ = expect "GA vote counts" <$> showElement <*>
-        (fmap grabVotes . findChild (unqual "GAVOTE"))
+        (grabVotes <=< findChild (unqual "GAVOTE"))
 
 -- | The number of votes for and against the current Security Council
 -- resolution.
@@ -143,12 +143,15 @@ scvote :: Region (Maybe (Integer, Integer))
 scvote = Region $ makeNS' "scvote" Nothing [] parse
   where
     parse _ = expect "SC vote counts" <$> showElement <*>
-        (fmap grabVotes . findChild (unqual "SCVOTE"))
+        (grabVotes <=< findChild (unqual "SCVOTE"))
 
-grabVotes :: Element -> Maybe (Integer, Integer)
-grabVotes root = (,)
-    <$> (readMaybe . strContent =<< findChild (unqual "FOR") root)
-    <*> (readMaybe . strContent =<< findChild (unqual "AGAINST") root)
+grabVotes :: Element -> Maybe (Maybe (Integer, Integer))
+grabVotes root = do
+    forStr <- grab "FOR"
+    againstStr <- grab "AGAINST"
+    return $ (,) <$> readMaybe forStr <*> readMaybe againstStr
+  where
+    grab childName = strContent <$> findChild (unqual childName) root
 
 -- | Region founder.
 --

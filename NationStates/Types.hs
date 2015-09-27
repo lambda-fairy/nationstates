@@ -123,6 +123,11 @@ readWAVote s = case s of
     "AGAINST" -> Just $ Just False
     _ -> Nothing
 
+readWAVote' :: String -> Maybe (Maybe WAVote)
+readWAVote' s
+    | null s = Just Nothing
+    | otherwise = Just <$> readWAVote s
+
 showWAVote :: WAVote -> String
 showWAVote v = case v of
     Nothing -> "UNDECIDED"
