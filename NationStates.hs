@@ -23,7 +23,7 @@ newContext
     :: String
         -- ^ User agent
     -> IO Context
-newContext userAgent = newContext' userAgent False
+newContext userAgent = newContext' userAgent True
 
 
 -- | Create a new 'Context', with extra options.
