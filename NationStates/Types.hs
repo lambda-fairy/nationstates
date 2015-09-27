@@ -3,6 +3,10 @@
 module NationStates.Types where
 
 
+import Control.Applicative
+import Prelude  -- GHC 7.10
+
+
 -- | Nation category.
 --
 -- This datum summarizes a nation's personal, economic, and political
