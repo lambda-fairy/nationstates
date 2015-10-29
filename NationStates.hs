@@ -31,7 +31,7 @@ newContext'
     :: String
         -- ^ User agent
     -> Bool
-        -- ^ Use HTTPS (experimental)
+        -- ^ Use HTTPS
     -> IO Context
 newContext' userAgent isSecure = do
     man <- newManager $
