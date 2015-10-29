@@ -17,6 +17,10 @@ module NationStates.Core (
 
     -- * Query strings
     Query(..),
+    shard,
+    shard',
+    withOptions,
+    withParams,
 
     -- * Connection manager
     Context(..),
@@ -34,6 +38,7 @@ module NationStates.Core (
 
 
 import Control.Applicative
+import Data.ByteString (ByteString)
 import qualified Data.ByteString.Char8 as BC
 import Data.Functor.Compose
 import qualified Data.Foldable as F
@@ -87,28 +92,20 @@ makeNS
     -> String
         -- ^ XML element name
     -> NS String
-makeNS shard elemName = makeNS' shard Nothing [] parse
+makeNS shardName elemName = makeNS' (shard shardName) parse
   where
     parse _ = strContent . fromMaybe errorMissing . findChild (unqual elemName)
     errorMissing = error $ "missing <" ++ elemName ++ "> element"
 
 
--- | Construct a request for a single shard.
+-- | Construct a request.
 makeNS'
-    :: String
-        -- ^ Shard name
-    -> Maybe Integer
-        -- ^ Shard ID
-    -> [(String, String)]
-        -- ^ List of options
+    :: Query
+        -- ^ Query string
     -> (Query -> Element -> a)
         -- ^ Function for parsing the response
     -> NS a
-makeNS' name maybeId options parse = Compose
-    (Query {
-        queryShards = Map.singleton name (Set.singleton maybeId),
-        queryOptions = Map.fromList options
-    }, Compose parse)
+makeNS' query parse = Compose (query, Compose parse)
 
 
 -- | Perform a request on the NationStates API.
@@ -126,17 +123,13 @@ requestNS kindAndName (Compose (q, Compose p)) c
   where
     parse = p q . fromMaybe (error "invalid response") . parseXMLDoc
     req = initRequest {
-        queryString
-            = HTTP.renderQuery True (HTTP.toQuery $
-                F.toList kindAndName ++ [("q", shards), ("v", show apiVersion)])
-            <> BC.pack options,
+        queryString = queryToString kindAndName q,
         requestHeaders
             = ("User-Agent", BC.pack $ contextUserAgent c)
             : requestHeaders initRequest,
         port = if contextIsSecure c then 443 else 80,
         secure = contextIsSecure c
         }
-    (shards, options) = queryToUrl q
 
 initRequest :: Request
 Just initRequest = parseUrl "http://www.nationstates.net/cgi-bin/api.cgi"
@@ -170,28 +163,60 @@ data Context = Context {
 -- | Keeps track of the set of shards to request.
 data Query = Query {
     queryShards :: Map String (Set (Maybe Integer)),
-    queryOptions :: Map String String
+    queryOptions :: Map String String,
+    queryParams :: Map String String
     } deriving Show
 
 instance Monoid Query where
-    mempty = Query mempty mempty
+    mempty = Query mempty mempty mempty
     mappend a b = Query {
         queryShards = Map.unionWith Set.union
             (queryShards a) (queryShards b),
         queryOptions = Map.unionWithKey mergeOptions
-            (queryOptions a) (queryOptions b)
+            (queryOptions a) (queryOptions b),
+        queryParams = Map.unionWithKey mergeOptions
+            (queryParams a) (queryParams b)
         }
       where
         mergeOptions key _ _
             = error $ "conflicting values for option " ++ show key
 
 
-queryToUrl :: Query -> (String, String)
-queryToUrl q = (shards, options)
+-- | Create a query for a single shard.
+shard :: String -> Query
+shard name = mempty { queryShards = Map.singleton name Set.empty }
+
+-- | Create a query for a single shard, with an extra ID.
+--
+-- For example, the @censusscore-23@ shard would be written as:
+-- @shard' "censusscore" 23@.
+shard' :: String -> Integer -> Query
+shard' name id' = mempty {
+    queryShards = Map.singleton name (Set.singleton (Just id')) }
+
+-- | Add extra @;@-delimited arguments.
+withOptions :: [(String, String)] -> Query
+withOptions options = mempty { queryOptions = Map.fromList options }
+
+-- | Add extra @&@-delimited arguments.
+withParams :: [(String, String)] -> Query
+withParams params = mempty { queryParams = Map.fromList params }
+
+
+queryToString :: Maybe (String, String) -> Query -> ByteString
+queryToString kindAndName q
+    = HTTP.renderQuery True (HTTP.toQuery $
+        F.toList kindAndName
+            ++ Map.toList (queryParams q)
+            ++ [("q", shards), ("v", show apiVersion)])
+    <> BC.pack options
   where
-    shards = intercalate "+" [ name ++ F.foldMap (\i -> "-" ++ show i) maybeId |
-        (name, is) <- Map.toList $ queryShards q,
-        maybeId <- Set.toList is ]
+    shards
+        | null (queryShards q) = "null"
+        | otherwise
+            = intercalate "+" [ name ++ F.foldMap (\i -> "-" ++ show i) maybeId |
+                (name, is) <- Map.toList $ queryShards q,
+                maybeId <- Set.toList is ]
     options = concat [ ";" ++ k ++ "=" ++ v |
         (k, v) <- Map.toList $ queryOptions q ]
 

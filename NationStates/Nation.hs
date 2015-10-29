@@ -183,7 +183,7 @@ scvote = Nation . fmap (expect "Security Council vote" <*> readWAVote') $
 --
 -- > ("Excellent","Strong","Very Good")
 freedom :: Nation (String, String, String)
-freedom = Nation $ makeNS' "freedom" Nothing [] parse
+freedom = Nation $ makeNS' (shard "freedom") parse
   where
     parse _ root
         | Just parent <- findChild (unqual "FREEDOM") root
@@ -246,7 +246,7 @@ banner = Nation $ makeNS "banner" "BANNER"
 --
 -- > ["v1","o4","b14","t23","m3"]
 banners :: Nation [String]
-banners = Nation $ makeNS' "banners" Nothing [] parse
+banners = Nation $ makeNS' (shard "banners") parse
   where
     parse _ root
         | Just parent <- findChild (unqual "BANNERS") root
@@ -260,7 +260,7 @@ banners = Nation $ makeNS' "banners" Nothing [] parse
 --
 -- > (24,6.0)
 censusscore :: Nation (Integer, Double)
-censusscore = Nation $ makeNS' "censusscore" Nothing [] parse
+censusscore = Nation $ makeNS' (shard "censusscore") parse
   where
     parse q root
         | Just (i, _) <- MultiSet.minView $ MultiSet.difference response request
@@ -278,7 +278,7 @@ censusscore = Nation $ makeNS' "censusscore" Nothing [] parse
 --
 -- > 94.0
 censusscore' :: Integer -> Nation Double
-censusscore' i = Nation $ makeNS' "censusscore" (Just i) [] parse
+censusscore' i = Nation $ makeNS' (shard' "censusscore" i) parse
   where
     parse _ = fromMaybe (error $ "could not find census " ++ show i) .
         lookup i . extractCensusScores

@@ -128,7 +128,7 @@ delegatevotes = Region . fmap (expect "delegate vote count" <*> readMaybe) $
 --
 -- > Just (28,11)
 gavote :: Region (Maybe (Integer, Integer))
-gavote = Region $ makeNS' "gavote" Nothing [] parse
+gavote = Region $ makeNS' (shard "gavote") parse
   where
     parse _ = expect "GA vote counts" <$> showElement <*>
         (grabVotes <=< findChild (unqual "GAVOTE"))
@@ -140,7 +140,7 @@ gavote = Region $ makeNS' "gavote" Nothing [] parse
 --
 -- > Just (20,34)
 scvote :: Region (Maybe (Integer, Integer))
-scvote = Region $ makeNS' "scvote" Nothing [] parse
+scvote = Region $ makeNS' (shard "scvote") parse
   where
     parse _ = expect "SC vote counts" <$> showElement <*>
         (grabVotes <=< findChild (unqual "SCVOTE"))
@@ -177,7 +177,7 @@ flag = Region . fmap (pureIf (/= "")) $ makeNS "flag" "FLAG"
 --
 -- > ["New Lunar Republic","Tareldanore"]
 embassies :: Region [String]
-embassies = Region $ makeNS' "embassies" Nothing [] parse
+embassies = Region $ makeNS' (shard "embassies") parse
   where
     parse _ = expect "embassy names" <$> showElement <*>
         fmap (grabChildren "EMBASSY") . findChild (unqual "EMBASSIES")
@@ -186,7 +186,7 @@ embassies = Region $ makeNS' "embassies" Nothing [] parse
 --
 -- > ["Silly","Monarchist","Large"]
 tags :: Region [String]
-tags = Region $ makeNS' "tags" Nothing [] parse
+tags = Region $ makeNS' (shard "tags") parse
   where
     parse _ = expect "region tags" <$> showElement <*>
         fmap (grabChildren "TAG") . findChild (unqual "TAGS")
