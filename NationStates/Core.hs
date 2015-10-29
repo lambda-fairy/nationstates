@@ -184,7 +184,8 @@ instance Monoid Query where
 
 -- | Create a query for a single shard.
 shard :: String -> Query
-shard name = mempty { queryShards = Map.singleton name Set.empty }
+shard name = mempty {
+    queryShards = Map.singleton name (Set.singleton Nothing) }
 
 -- | Create a query for a single shard, with an extra ID.
 --
@@ -212,7 +213,7 @@ queryToString kindAndName q
     <> BC.pack options
   where
     shards
-        | null (queryShards q) = "null"
+        | Map.null (queryShards q) = "null"
         | otherwise
             = intercalate "+" [ name ++ F.foldMap (\i -> "-" ++ show i) maybeId |
                 (name, is) <- Map.toList $ queryShards q,
