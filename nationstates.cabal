@@ -24,6 +24,7 @@ library
         NationStates.Nation
         NationStates.Region
         NationStates.Types
+        NationStates.Verify
     build-depends:
         base >= 4.6 && < 5,
         bytestring,
