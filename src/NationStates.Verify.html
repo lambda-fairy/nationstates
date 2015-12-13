@@ -1,0 +1,796 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><link rel="stylesheet" type="text/css" href="style.css"
+     /><script type="text/javascript" src="highlight.js"
+    ></script
+    ></head
+  ><body
+  ><pre
+    ><span class="hs-comment"
+      >-- | The Authentication API.</span
+      ><span
+      >
+</span
+      ><a name="line-2"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-3"
+      ></a
+      ><span class="hs-comment"
+      >-- See &lt;https://www.nationstates.net/pages/api.html#authentication&gt;.</span
+      ><span
+      >
+</span
+      ><a name="line-4"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-5"
+      ></a
+      ><span class="hs-comment"
+      >-- Here's a short example:</span
+      ><span
+      >
+</span
+      ><a name="line-6"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-7"
+      ></a
+      ><span class="hs-comment"
+      >-- @</span
+      ><span
+      >
+</span
+      ><a name="line-8"
+      ></a
+      ><span class="hs-comment"
+      >-- import NationStates</span
+      ><span
+      >
+</span
+      ><a name="line-9"
+      ></a
+      ><span class="hs-comment"
+      >-- import qualified NationStates.Nation as Nation</span
+      ><span
+      >
+</span
+      ><a name="line-10"
+      ></a
+      ><span class="hs-comment"
+      >-- import qualified NationStates.Verify as Nation</span
+      ><span
+      >
+</span
+      ><a name="line-11"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-12"
+      ></a
+      ><span class="hs-comment"
+      >-- main = do</span
+      ><span
+      >
+</span
+      ><a name="line-13"
+      ></a
+      ><span class="hs-comment"
+      >--     c &lt;- 'NationStates.newContext' &quot;ExampleBot/2000&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-14"
+      ></a
+      ><span class="hs-comment"
+      >--     ok &lt;- Nation.run &quot;The Vines&quot; (Nation.verify checksum token) c</span
+      ><span
+      >
+</span
+      ><a name="line-15"
+      ></a
+      ><span class="hs-comment"
+      >--     putStrLn $ if ok then \&quot;Success\&quot; else \&quot;Failure\&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-16"
+      ></a
+      ><span class="hs-comment"
+      >--   where</span
+      ><span
+      >
+</span
+      ><a name="line-17"
+      ></a
+      ><span class="hs-comment"
+      >--     checksum = \&quot;CCT60sf2CfylDqSNzCMleqsvxrwjiG-9Zw4TXZjdMmk\&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-18"
+      ></a
+      ><span class="hs-comment"
+      >--     token = Just &quot;testing123&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-19"
+      ></a
+      ><span class="hs-comment"
+      >-- @</span
+      ><span
+      >
+</span
+      ><a name="line-20"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-21"
+      ></a
+      ><span class="hs-keyword"
+      >module</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >NationStates</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Verify</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span
+      >
+</span
+      ><a name="line-22"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Verify.html#verify"
+      ><span class="hs-identifier hs-var"
+	>verify</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-23"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-24"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-25"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-26"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >qualified</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Data</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Foldable</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >as</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >F</span
+      ><span
+      >
+</span
+      ><a name="line-27"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Text</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >XML</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Light</span
+      ><span
+      >
+</span
+      ><a name="line-28"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-29"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html"
+      ><span class="hs-identifier"
+	>NationStates</span
+	><span class="hs-operator"
+	>.</span
+	><span class="hs-identifier"
+	>Core</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-30"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html"
+      ><span class="hs-identifier"
+	>NationStates</span
+	><span class="hs-operator"
+	>.</span
+	><span class="hs-identifier"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-glyph"
+      >..</span
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-31"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-32"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-33"
+      ></a
+      ><span class="hs-comment"
+      >-- | Add an authentication token to an existing 'Nation' request.</span
+      ><span
+      >
+</span
+      ><a name="line-34"
+      ></a
+      ><span class="hs-identifier"
+      >verify</span
+      ><span
+      >
+</span
+      ><a name="line-35"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-36"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- ^ Checksum</span
+      ><span
+      >
+</span
+      ><a name="line-37"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Maybe</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-38"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- ^ Site-specific token</span
+      ><span
+      >
+</span
+      ><a name="line-39"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Bool</span
+      ><span
+      >
+</span
+      ><a name="line-40"
+      ></a
+      ><a name="verify"
+      ><a href="NationStates.Verify.html#verify"
+	><span class="hs-identifier"
+	  >verify</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627447245"
+      ><a href="#local-1627447245"
+	><span class="hs-identifier"
+	  >checksum</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627447246"
+      ><a href="#local-1627447246"
+	><span class="hs-identifier"
+	  >token</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS%27"
+      ><span class="hs-identifier hs-var"
+	>makeNS'</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627447247"
+      ><span class="hs-identifier hs-var"
+	>query</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627447248"
+      ><span class="hs-identifier hs-var"
+	>parse</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-41"
+      ></a
+      ><span
+      >  </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-42"
+      ></a
+      ><span
+      >    </span
+      ><a name="local-1627447247"
+      ><a href="#local-1627447247"
+	><span class="hs-identifier"
+	  >query</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#withParams"
+      ><span class="hs-identifier hs-var"
+	>withParams</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      >
+</span
+      ><a name="line-43"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-special"
+      >[</span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-string"
+      >&quot;a&quot;</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;verify&quot;</span
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-string"
+      >&quot;checksum&quot;</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><a href="#local-1627447245"
+      ><span class="hs-identifier hs-var"
+	>checksum</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >]</span
+      ><span
+      >
+</span
+      ><a name="line-44"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-operator hs-var"
+      >++</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >F</span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span class="hs-identifier hs-var"
+      >foldMap</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-glyph"
+      >\</span
+      ><a name="local-1627447249"
+      ><a href="#local-1627447249"
+	><span class="hs-identifier"
+	  >t</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >[</span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-string"
+      >&quot;token&quot;</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><a href="#local-1627447249"
+      ><span class="hs-identifier hs-var"
+	>t</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >]</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><a href="#local-1627447246"
+      ><span class="hs-identifier hs-var"
+	>token</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-45"
+      ></a
+      ><span
+      >    </span
+      ><a name="local-1627447248"
+      ><a href="#local-1627447248"
+	><span class="hs-identifier"
+	  >parse</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >_</span
+      ><span
+      > </span
+      ><a name="local-1627447250"
+      ><a href="#local-1627447250"
+	><span class="hs-identifier"
+	  >root</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-46"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a name="local-1627447251"
+      ><a href="#local-1627447251"
+	><span class="hs-identifier"
+	  >e</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >findChild</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-var"
+      >unqual</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;VERIFY&quot;</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><a href="#local-1627447250"
+      ><span class="hs-identifier hs-var"
+	>root</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      >
+</span
+      ><a name="line-47"
+      ></a
+      ><span
+      >            </span
+      ><span class="hs-keyword"
+      >case</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >strContent</span
+      ><span
+      > </span
+      ><a href="#local-1627447251"
+      ><span class="hs-identifier hs-var"
+	>e</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >of</span
+      ><span
+      >
+</span
+      ><a name="line-48"
+      ></a
+      ><span
+      >                </span
+      ><span class="hs-string"
+      >&quot;0&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >False</span
+      ><span
+      >
+</span
+      ><a name="line-49"
+      ></a
+      ><span
+      >                </span
+      ><span class="hs-string"
+      >&quot;1&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >True</span
+      ><span
+      >
+</span
+      ><a name="line-50"
+      ></a
+      ><span
+      >                </span
+      ><a name="local-1627447252"
+      ><a href="#local-1627447252"
+	><span class="hs-identifier"
+	  >s</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >error</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;invalid value for &lt;VERIFY&gt;: &quot;</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >++</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >show</span
+      ><span
+      > </span
+      ><a href="#local-1627447252"
+      ><span class="hs-identifier hs-var"
+	>s</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-51"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >otherwise</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >error</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;missing &lt;VERIFY&gt; element&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-52"
+      ></a
+      ></pre
+    ></body
+  ></html
+>

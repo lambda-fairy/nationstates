@@ -1,0 +1,1121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><link rel="stylesheet" type="text/css" href="style.css"
+     /><script type="text/javascript" src="highlight.js"
+    ></script
+    ></head
+  ><body
+  ><pre
+    ><span class="hs-comment"
+      >-- | Simple rate limiting combinator.</span
+      ><span
+      >
+</span
+      ><a name="line-2"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-3"
+      ></a
+      ><span class="hs-keyword"
+      >module</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >NationStates</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >RateLimit</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span
+      >
+</span
+      ><a name="line-4"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.RateLimit.html#RateLimit"
+      ><span class="hs-identifier hs-type"
+	>RateLimit</span
+	></a
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-5"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.RateLimit.html#newRateLimit"
+      ><span class="hs-identifier hs-var"
+	>newRateLimit</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-6"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.RateLimit.html#rateLimit"
+      ><span class="hs-identifier hs-var"
+	>rateLimit</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-7"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.RateLimit.html#setDelay"
+      ><span class="hs-identifier hs-var"
+	>setDelay</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-8"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-9"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-10"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-11"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Control</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Concurrent</span
+      ><span
+      >
+</span
+      ><a name="line-12"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Control</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Exception</span
+      ><span
+      >
+</span
+      ><a name="line-13"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >System</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Clock</span
+      ><span
+      >
+</span
+      ><a name="line-14"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-15"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-16"
+      ></a
+      ><span class="hs-keyword"
+      >data</span
+      ><span
+      > </span
+      ><a name="RateLimit"
+      ><a href="NationStates.RateLimit.html#RateLimit"
+	><span class="hs-identifier"
+	  >RateLimit</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a name="RateLimit"
+      ><a href="NationStates.RateLimit.html#RateLimit"
+	><span class="hs-identifier"
+	  >RateLimit</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >{</span
+      ><span
+      >
+</span
+      ><a name="line-17"
+      ></a
+      ><span
+      >    </span
+      ><a name="_rateLock"
+      ><a href="NationStates.RateLimit.html#_rateLock"
+	><span class="hs-identifier"
+	  >_rateLock</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >!</span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-type"
+      >MVar</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >TimeSpec</span
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-18"
+      ></a
+      ><span
+      >    </span
+      ><a name="_rateDelay"
+      ><a href="NationStates.RateLimit.html#_rateDelay"
+	><span class="hs-identifier"
+	  >_rateDelay</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >!</span
+      ><span class="hs-identifier hs-type"
+      >TimeSpec</span
+      ><span
+      >
+</span
+      ><a name="line-19"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-special"
+      >}</span
+      ><span
+      >
+</span
+      ><a name="line-20"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-21"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-22"
+      ></a
+      ><span class="hs-comment"
+      >-- | Create a new rate limiter with the specified delay.</span
+      ><span
+      >
+</span
+      ><a name="line-23"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-24"
+      ></a
+      ><span class="hs-comment"
+      >-- The rate limiter is thread-safe, and can be shared between threads.</span
+      ><span
+      >
+</span
+      ><a name="line-25"
+      ></a
+      ><span class="hs-identifier"
+      >newRateLimit</span
+      ><span
+      >
+</span
+      ><a name="line-26"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Rational</span
+      ><span
+      >
+</span
+      ><a name="line-27"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- ^ Delay, in seconds</span
+      ><span
+      >
+</span
+      ><a name="line-28"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >IO</span
+      ><span
+      > </span
+      ><a href="NationStates.RateLimit.html#RateLimit"
+      ><span class="hs-identifier hs-type"
+	>RateLimit</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-29"
+      ></a
+      ><a name="newRateLimit"
+      ><a href="NationStates.RateLimit.html#newRateLimit"
+	><span class="hs-identifier"
+	  >newRateLimit</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627414480"
+      ><a href="#local-1627414480"
+	><span class="hs-identifier"
+	  >delay'</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >do</span
+      ><span
+      >
+</span
+      ><a name="line-30"
+      ></a
+      ><span
+      >    </span
+      ><a name="local-1627414531"
+      ><a href="#local-1627414531"
+	><span class="hs-identifier"
+	  >lock</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >newMVar</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$!</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >negate</span
+      ><span
+      > </span
+      ><a href="#local-1627414481"
+      ><span class="hs-identifier hs-var"
+	>delay</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-31"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier hs-var"
+      >return</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.RateLimit.html#RateLimit"
+      ><span class="hs-identifier hs-var"
+	>RateLimit</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627414531"
+      ><span class="hs-identifier hs-var"
+	>lock</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627414481"
+      ><span class="hs-identifier hs-var"
+	>delay</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-32"
+      ></a
+      ><span
+      >  </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-33"
+      ></a
+      ><span
+      >    </span
+      ><a name="local-1627414481"
+      ><a href="#local-1627414481"
+	><span class="hs-identifier"
+	  >delay</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.RateLimit.html#fromSeconds"
+      ><span class="hs-identifier hs-var"
+	>fromSeconds</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627414480"
+      ><span class="hs-identifier hs-var"
+	>delay'</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-34"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-35"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-36"
+      ></a
+      ><span class="hs-comment"
+      >-- | Run the given action, pausing as necessary to keep under the rate limit.</span
+      ><span
+      >
+</span
+      ><a name="line-37"
+      ></a
+      ><span class="hs-identifier"
+      >rateLimit</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.RateLimit.html#RateLimit"
+      ><span class="hs-identifier hs-type"
+	>RateLimit</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >IO</span
+      ><span
+      > </span
+      ><a href="#local-1627414479"
+      ><span class="hs-identifier hs-type"
+	>a</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >IO</span
+      ><span
+      > </span
+      ><a href="#local-1627414479"
+      ><span class="hs-identifier hs-type"
+	>a</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-38"
+      ></a
+      ><a name="rateLimit"
+      ><a href="NationStates.RateLimit.html#rateLimit"
+	><span class="hs-identifier"
+	  >rateLimit</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.RateLimit.html#RateLimit"
+      ><span class="hs-identifier hs-var"
+	>RateLimit</span
+	></a
+      ><span
+      > </span
+      ><a name="local-1627414532"
+      ><a href="#local-1627414532"
+	><span class="hs-identifier"
+	  >lock</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627414533"
+      ><a href="#local-1627414533"
+	><span class="hs-identifier"
+	  >delay</span
+	  ></a
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><a name="local-1627414534"
+      ><a href="#local-1627414534"
+	><span class="hs-identifier"
+	  >action</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      >
+</span
+      ><a name="line-39"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier hs-var"
+      >mask</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >\</span
+      ><a name="local-1627414626"
+      ><a href="#local-1627414626"
+	><span class="hs-identifier"
+	  >restore</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >do</span
+      ><span
+      >
+</span
+      ><a name="line-40"
+      ></a
+      ><span
+      >        </span
+      ><a name="local-1627414627"
+      ><a href="#local-1627414627"
+	><span class="hs-identifier"
+	  >prev</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >takeMVar</span
+      ><span
+      > </span
+      ><a href="#local-1627414532"
+      ><span class="hs-identifier hs-var"
+	>lock</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-41"
+      ></a
+      ><span
+      >        </span
+      ><a name="local-1627414628"
+      ><a href="#local-1627414628"
+	><span class="hs-identifier"
+	  >now</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >getTime</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Monotonic</span
+      ><span
+      >
+</span
+      ><a name="line-42"
+      ></a
+      ><span
+      >        </span
+      ><a href="NationStates.RateLimit.html#threadDelay%27"
+      ><span class="hs-identifier hs-var"
+	>threadDelay'</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="#local-1627414627"
+      ><span class="hs-identifier hs-var"
+	>prev</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >+</span
+      ><span
+      > </span
+      ><a href="#local-1627414533"
+      ><span class="hs-identifier hs-var"
+	>delay</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-</span
+      ><span
+      > </span
+      ><a href="#local-1627414628"
+      ><span class="hs-identifier hs-var"
+	>now</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >`</span
+      ><span class="hs-identifier hs-var"
+      >onException</span
+      ><span class="hs-special"
+      >`</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >putMVar</span
+      ><span
+      > </span
+      ><a href="#local-1627414532"
+      ><span class="hs-identifier hs-var"
+	>lock</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627414627"
+      ><span class="hs-identifier hs-var"
+	>prev</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-43"
+      ></a
+      ><span
+      >        </span
+      ><a href="#local-1627414626"
+      ><span class="hs-identifier hs-var"
+	>restore</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627414534"
+      ><span class="hs-identifier hs-var"
+	>action</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >`</span
+      ><span class="hs-identifier hs-var"
+      >finally</span
+      ><span class="hs-special"
+      >`</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-var"
+      >putMVar</span
+      ><span
+      > </span
+      ><a href="#local-1627414532"
+      ><span class="hs-identifier hs-var"
+	>lock</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >=&lt;&lt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >getTime</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Monotonic</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-44"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-45"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-46"
+      ></a
+      ><span class="hs-identifier"
+      >threadDelay'</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >TimeSpec</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >IO</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-47"
+      ></a
+      ><a name="threadDelay%27"
+      ><a href="NationStates.RateLimit.html#threadDelay%27"
+	><span class="hs-identifier"
+	  >threadDelay'</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627414893"
+      ><a href="#local-1627414893"
+	><span class="hs-identifier"
+	  >t</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >threadDelay</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fromInteger</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >timeSpecAsNanoSecs</span
+      ><span
+      > </span
+      ><a href="#local-1627414893"
+      ><span class="hs-identifier hs-var"
+	>t</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >`</span
+      ><span class="hs-identifier hs-var"
+      >div</span
+      ><span class="hs-special"
+      >`</span
+      ><span
+      > </span
+      ><span class="hs-number"
+      >1000</span
+      ><span
+      >
+</span
+      ><a name="line-48"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-49"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-50"
+      ></a
+      ><span class="hs-comment"
+      >-- | Create a new rate limiter with the same lock but a different delay.</span
+      ><span
+      >
+</span
+      ><a name="line-51"
+      ></a
+      ><span class="hs-identifier"
+      >setDelay</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Rational</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.RateLimit.html#RateLimit"
+      ><span class="hs-identifier hs-type"
+	>RateLimit</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.RateLimit.html#RateLimit"
+      ><span class="hs-identifier hs-type"
+	>RateLimit</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-52"
+      ></a
+      ><a name="setDelay"
+      ><a href="NationStates.RateLimit.html#setDelay"
+	><span class="hs-identifier"
+	  >setDelay</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627414927"
+      ><a href="#local-1627414927"
+	><span class="hs-identifier"
+	  >delay'</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.RateLimit.html#RateLimit"
+      ><span class="hs-identifier hs-var"
+	>RateLimit</span
+	></a
+      ><span
+      > </span
+      ><a name="local-1627414928"
+      ><a href="#local-1627414928"
+	><span class="hs-identifier"
+	  >lock</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >_</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.RateLimit.html#RateLimit"
+      ><span class="hs-identifier hs-var"
+	>RateLimit</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627414928"
+      ><span class="hs-identifier hs-var"
+	>lock</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.RateLimit.html#fromSeconds"
+      ><span class="hs-identifier hs-var"
+	>fromSeconds</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627414927"
+      ><span class="hs-identifier hs-var"
+	>delay'</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-53"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-54"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-55"
+      ></a
+      ><span class="hs-identifier"
+      >fromSeconds</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Rational</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >TimeSpec</span
+      ><span
+      >
+</span
+      ><a name="line-56"
+      ></a
+      ><a name="fromSeconds"
+      ><a href="NationStates.RateLimit.html#fromSeconds"
+	><span class="hs-identifier"
+	  >fromSeconds</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627414929"
+      ><a href="#local-1627414929"
+	><span class="hs-identifier"
+	  >n</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fromInteger</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >ceiling</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="#local-1627414929"
+      ><span class="hs-identifier hs-var"
+	>n</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >*</span
+      ><span
+      > </span
+      ><span class="hs-number"
+      >1000</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >*</span
+      ><span
+      > </span
+      ><span class="hs-number"
+      >1000</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >*</span
+      ><span
+      > </span
+      ><span class="hs-number"
+      >1000</span
+      ><span
+      >
+</span
+      ><a name="line-57"
+      ></a
+      ></pre
+    ></body
+  ></html
+>

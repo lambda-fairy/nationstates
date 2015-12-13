@@ -1,0 +1,2840 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><link rel="stylesheet" type="text/css" href="style.css"
+     /><script type="text/javascript" src="highlight.js"
+    ></script
+    ></head
+  ><body
+  ><pre
+    ><span class="hs-comment"
+      >-- | Data structures used by NationStates.</span
+      ><span
+      >
+</span
+      ><a name="line-2"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-3"
+      ></a
+      ><span class="hs-keyword"
+      >module</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >NationStates</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Types</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-4"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-5"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-6"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Control</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Applicative</span
+      ><span
+      >
+</span
+      ><a name="line-7"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Prelude</span
+      ><span
+      >  </span
+      ><span class="hs-comment"
+      >-- GHC 7.10</span
+      ><span
+      >
+</span
+      ><a name="line-8"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-9"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-10"
+      ></a
+      ><span class="hs-comment"
+      >-- | Nation category.</span
+      ><span
+      >
+</span
+      ><a name="line-11"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-12"
+      ></a
+      ><span class="hs-comment"
+      >-- This datum summarizes a nation's personal, economic, and political</span
+      ><span
+      >
+</span
+      ><a name="line-13"
+      ></a
+      ><span class="hs-comment"
+      >-- freedoms.</span
+      ><span
+      >
+</span
+      ><a name="line-14"
+      ></a
+      ><span class="hs-keyword"
+      >data</span
+      ><span
+      > </span
+      ><a name="WACategory"
+      ><a href="NationStates.Types.html#WACategory"
+	><span class="hs-identifier"
+	  >WACategory</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-15"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a name="Anarchy"
+      ><a href="NationStates.Types.html#Anarchy"
+	><span class="hs-identifier"
+	  >Anarchy</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-16"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="AuthoritarianDemocracy"
+      ><a href="NationStates.Types.html#AuthoritarianDemocracy"
+	><span class="hs-identifier"
+	  >AuthoritarianDemocracy</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-17"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="BenevolentDictatorship"
+      ><a href="NationStates.Types.html#BenevolentDictatorship"
+	><span class="hs-identifier"
+	  >BenevolentDictatorship</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-18"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="CapitalistParadise"
+      ><a href="NationStates.Types.html#CapitalistParadise"
+	><span class="hs-identifier"
+	  >CapitalistParadise</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-19"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="Capitalizt"
+      ><a href="NationStates.Types.html#Capitalizt"
+	><span class="hs-identifier"
+	  >Capitalizt</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-20"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="CivilRightsLovefest"
+      ><a href="NationStates.Types.html#CivilRightsLovefest"
+	><span class="hs-identifier"
+	  >CivilRightsLovefest</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-21"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="CompulsoryConsumeristState"
+      ><a href="NationStates.Types.html#CompulsoryConsumeristState"
+	><span class="hs-identifier"
+	  >CompulsoryConsumeristState</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-22"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="ConservativeDemocracy"
+      ><a href="NationStates.Types.html#ConservativeDemocracy"
+	><span class="hs-identifier"
+	  >ConservativeDemocracy</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-23"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="CorporateBordello"
+      ><a href="NationStates.Types.html#CorporateBordello"
+	><span class="hs-identifier"
+	  >CorporateBordello</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-24"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="CorporatePoliceState"
+      ><a href="NationStates.Types.html#CorporatePoliceState"
+	><span class="hs-identifier"
+	  >CorporatePoliceState</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-25"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="CorruptDictatorship"
+      ><a href="NationStates.Types.html#CorruptDictatorship"
+	><span class="hs-identifier"
+	  >CorruptDictatorship</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-26"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="DemocraticSocialists"
+      ><a href="NationStates.Types.html#DemocraticSocialists"
+	><span class="hs-identifier"
+	  >DemocraticSocialists</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-27"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="FatherKnowsBestState"
+      ><a href="NationStates.Types.html#FatherKnowsBestState"
+	><span class="hs-identifier"
+	  >FatherKnowsBestState</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#FatherOrMother"
+      ><span class="hs-identifier hs-type"
+	>FatherOrMother</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-28"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- ^ This category has two variations: \&quot;/Father/ Knows Best</span
+      ><span
+      >
+</span
+      ><a name="line-29"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- State\&quot; and \&quot;/Mother/ Knows Best State\&quot;.</span
+      ><span
+      >
+</span
+      ><a name="line-30"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="FreeMarketParadise"
+      ><a href="NationStates.Types.html#FreeMarketParadise"
+	><span class="hs-identifier"
+	  >FreeMarketParadise</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-31"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="InoffensiveCentristDemocracy"
+      ><a href="NationStates.Types.html#InoffensiveCentristDemocracy"
+	><span class="hs-identifier"
+	  >InoffensiveCentristDemocracy</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-32"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="IronFistConsumerists"
+      ><a href="NationStates.Types.html#IronFistConsumerists"
+	><span class="hs-identifier"
+	  >IronFistConsumerists</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-33"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="IronFistSocialists"
+      ><a href="NationStates.Types.html#IronFistSocialists"
+	><span class="hs-identifier"
+	  >IronFistSocialists</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-34"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="LeftLeaningCollegeState"
+      ><a href="NationStates.Types.html#LeftLeaningCollegeState"
+	><span class="hs-identifier"
+	  >LeftLeaningCollegeState</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-35"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="LeftWingUtopia"
+      ><a href="NationStates.Types.html#LeftWingUtopia"
+	><span class="hs-identifier"
+	  >LeftWingUtopia</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-36"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="LiberalDemocraticSocialists"
+      ><a href="NationStates.Types.html#LiberalDemocraticSocialists"
+	><span class="hs-identifier"
+	  >LiberalDemocraticSocialists</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-37"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="LibertarianPoliceState"
+      ><a href="NationStates.Types.html#LibertarianPoliceState"
+	><span class="hs-identifier"
+	  >LibertarianPoliceState</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-38"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="MoralisticDemocracy"
+      ><a href="NationStates.Types.html#MoralisticDemocracy"
+	><span class="hs-identifier"
+	  >MoralisticDemocracy</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-39"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="NewYorkTimesDemocracy"
+      ><a href="NationStates.Types.html#NewYorkTimesDemocracy"
+	><span class="hs-identifier"
+	  >NewYorkTimesDemocracy</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-40"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="PsychoticDictatorship"
+      ><a href="NationStates.Types.html#PsychoticDictatorship"
+	><span class="hs-identifier"
+	  >PsychoticDictatorship</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-41"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="RightWingUtopia"
+      ><a href="NationStates.Types.html#RightWingUtopia"
+	><span class="hs-identifier"
+	  >RightWingUtopia</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-42"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="ScandinavianLiberalParadise"
+      ><a href="NationStates.Types.html#ScandinavianLiberalParadise"
+	><span class="hs-identifier"
+	  >ScandinavianLiberalParadise</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-43"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="TyrannyByMajority"
+      ><a href="NationStates.Types.html#TyrannyByMajority"
+	><span class="hs-identifier"
+	  >TyrannyByMajority</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-44"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-keyword"
+      >deriving</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-type"
+      >Eq</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Ord</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Read</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Show</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-45"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-46"
+      ></a
+      ><span class="hs-comment"
+      >-- | Differentiates between a /Father/ or /Mother/ Knows Best State.</span
+      ><span
+      >
+</span
+      ><a name="line-47"
+      ></a
+      ><span class="hs-keyword"
+      >data</span
+      ><span
+      > </span
+      ><a name="FatherOrMother"
+      ><a href="NationStates.Types.html#FatherOrMother"
+	><span class="hs-identifier"
+	  >FatherOrMother</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a name="Father"
+      ><a href="NationStates.Types.html#Father"
+	><span class="hs-identifier"
+	  >Father</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><a name="Mother"
+      ><a href="NationStates.Types.html#Mother"
+	><span class="hs-identifier"
+	  >Mother</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-48"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-keyword"
+      >deriving</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-type"
+      >Eq</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Ord</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Read</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Show</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-49"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-50"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-51"
+      ></a
+      ><span class="hs-identifier"
+      >readWACategory</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Maybe</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#WACategory"
+      ><span class="hs-identifier hs-type"
+	>WACategory</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-52"
+      ></a
+      ><a name="readWACategory"
+      ><a href="NationStates.Types.html#readWACategory"
+	><span class="hs-identifier"
+	  >readWACategory</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627418782"
+      ><a href="#local-1627418782"
+	><span class="hs-identifier"
+	  >s</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >case</span
+      ><span
+      > </span
+      ><a href="#local-1627418782"
+      ><span class="hs-identifier hs-var"
+	>s</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >of</span
+      ><span
+      >
+</span
+      ><a name="line-53"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Anarchy&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#Anarchy"
+      ><span class="hs-identifier hs-var"
+	>Anarchy</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-54"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Authoritarian Democracy&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#AuthoritarianDemocracy"
+      ><span class="hs-identifier hs-var"
+	>AuthoritarianDemocracy</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-55"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Benevolent Dictatorship&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#BenevolentDictatorship"
+      ><span class="hs-identifier hs-var"
+	>BenevolentDictatorship</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-56"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Capitalist Paradise&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#CapitalistParadise"
+      ><span class="hs-identifier hs-var"
+	>CapitalistParadise</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-57"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Capitalizt&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#Capitalizt"
+      ><span class="hs-identifier hs-var"
+	>Capitalizt</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-58"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Civil Rights Lovefest&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#CivilRightsLovefest"
+      ><span class="hs-identifier hs-var"
+	>CivilRightsLovefest</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-59"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Compulsory Consumerist State&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#CompulsoryConsumeristState"
+      ><span class="hs-identifier hs-var"
+	>CompulsoryConsumeristState</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-60"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Conservative Democracy&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#ConservativeDemocracy"
+      ><span class="hs-identifier hs-var"
+	>ConservativeDemocracy</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-61"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Corporate Bordello&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#CorporateBordello"
+      ><span class="hs-identifier hs-var"
+	>CorporateBordello</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-62"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Corporate Police State&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#CorporatePoliceState"
+      ><span class="hs-identifier hs-var"
+	>CorporatePoliceState</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-63"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Corrupt Dictatorship&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#CorruptDictatorship"
+      ><span class="hs-identifier hs-var"
+	>CorruptDictatorship</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-64"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Democratic Socialists&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#DemocraticSocialists"
+      ><span class="hs-identifier hs-var"
+	>DemocraticSocialists</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-65"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Father Knows Best State&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#FatherKnowsBestState"
+      ><span class="hs-identifier hs-var"
+	>FatherKnowsBestState</span
+	></a
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#Father"
+      ><span class="hs-identifier hs-var"
+	>Father</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-66"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Free-Market Paradise&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#FreeMarketParadise"
+      ><span class="hs-identifier hs-var"
+	>FreeMarketParadise</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-67"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Inoffensive Centrist Democracy&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#InoffensiveCentristDemocracy"
+      ><span class="hs-identifier hs-var"
+	>InoffensiveCentristDemocracy</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-68"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Iron Fist Consumerists&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#IronFistConsumerists"
+      ><span class="hs-identifier hs-var"
+	>IronFistConsumerists</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-69"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Iron Fist Socialists&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#IronFistSocialists"
+      ><span class="hs-identifier hs-var"
+	>IronFistSocialists</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-70"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Left-Leaning College State&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#LeftLeaningCollegeState"
+      ><span class="hs-identifier hs-var"
+	>LeftLeaningCollegeState</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-71"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Left-wing Utopia&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#LeftWingUtopia"
+      ><span class="hs-identifier hs-var"
+	>LeftWingUtopia</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-72"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Liberal Democratic Socialists&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#LiberalDemocraticSocialists"
+      ><span class="hs-identifier hs-var"
+	>LiberalDemocraticSocialists</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-73"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Libertarian Police State&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#LibertarianPoliceState"
+      ><span class="hs-identifier hs-var"
+	>LibertarianPoliceState</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-74"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Moralistic Democracy&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#MoralisticDemocracy"
+      ><span class="hs-identifier hs-var"
+	>MoralisticDemocracy</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-75"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Mother Knows Best State&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#FatherKnowsBestState"
+      ><span class="hs-identifier hs-var"
+	>FatherKnowsBestState</span
+	></a
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#Mother"
+      ><span class="hs-identifier hs-var"
+	>Mother</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-76"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;New York Times Democracy&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#NewYorkTimesDemocracy"
+      ><span class="hs-identifier hs-var"
+	>NewYorkTimesDemocracy</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-77"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Psychotic Dictatorship&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#PsychoticDictatorship"
+      ><span class="hs-identifier hs-var"
+	>PsychoticDictatorship</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-78"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Right-wing Utopia&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#RightWingUtopia"
+      ><span class="hs-identifier hs-var"
+	>RightWingUtopia</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-79"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Scandinavian Liberal Paradise&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#ScandinavianLiberalParadise"
+      ><span class="hs-identifier hs-var"
+	>ScandinavianLiberalParadise</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-80"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Tyranny by Majority&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#TyrannyByMajority"
+      ><span class="hs-identifier hs-var"
+	>TyrannyByMajority</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-81"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier"
+      >_</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Nothing</span
+      ><span
+      >
+</span
+      ><a name="line-82"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-83"
+      ></a
+      ><span class="hs-identifier"
+      >showWACategory</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#WACategory"
+      ><span class="hs-identifier hs-type"
+	>WACategory</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-84"
+      ></a
+      ><a name="showWACategory"
+      ><a href="NationStates.Types.html#showWACategory"
+	><span class="hs-identifier"
+	  >showWACategory</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627418783"
+      ><a href="#local-1627418783"
+	><span class="hs-identifier"
+	  >c</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >case</span
+      ><span
+      > </span
+      ><a href="#local-1627418783"
+      ><span class="hs-identifier hs-var"
+	>c</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >of</span
+      ><span
+      >
+</span
+      ><a name="line-85"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#Anarchy"
+      ><span class="hs-identifier hs-var"
+	>Anarchy</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Anarchy&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-86"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#AuthoritarianDemocracy"
+      ><span class="hs-identifier hs-var"
+	>AuthoritarianDemocracy</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Authoritarian Democracy&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-87"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#BenevolentDictatorship"
+      ><span class="hs-identifier hs-var"
+	>BenevolentDictatorship</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Benevolent Dictatorship&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-88"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#CapitalistParadise"
+      ><span class="hs-identifier hs-var"
+	>CapitalistParadise</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Capitalist Paradise&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-89"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#Capitalizt"
+      ><span class="hs-identifier hs-var"
+	>Capitalizt</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Capitalizt&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-90"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#CivilRightsLovefest"
+      ><span class="hs-identifier hs-var"
+	>CivilRightsLovefest</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Civil Rights Lovefest&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-91"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#CompulsoryConsumeristState"
+      ><span class="hs-identifier hs-var"
+	>CompulsoryConsumeristState</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Compulsory Consumerist State&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-92"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#ConservativeDemocracy"
+      ><span class="hs-identifier hs-var"
+	>ConservativeDemocracy</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Conservative Democracy&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-93"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#CorporateBordello"
+      ><span class="hs-identifier hs-var"
+	>CorporateBordello</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Corporate Bordello&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-94"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#CorporatePoliceState"
+      ><span class="hs-identifier hs-var"
+	>CorporatePoliceState</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Corporate Police State&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-95"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#CorruptDictatorship"
+      ><span class="hs-identifier hs-var"
+	>CorruptDictatorship</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Corrupt Dictatorship&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-96"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#DemocraticSocialists"
+      ><span class="hs-identifier hs-var"
+	>DemocraticSocialists</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Democratic Socialists&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-97"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#FatherKnowsBestState"
+      ><span class="hs-identifier hs-var"
+	>FatherKnowsBestState</span
+	></a
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#Father"
+      ><span class="hs-identifier hs-var"
+	>Father</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Father Knows Best State&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-98"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#FatherKnowsBestState"
+      ><span class="hs-identifier hs-var"
+	>FatherKnowsBestState</span
+	></a
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#Mother"
+      ><span class="hs-identifier hs-var"
+	>Mother</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Mother Knows Best State&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-99"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#FreeMarketParadise"
+      ><span class="hs-identifier hs-var"
+	>FreeMarketParadise</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Free-Market Paradise&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-100"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#InoffensiveCentristDemocracy"
+      ><span class="hs-identifier hs-var"
+	>InoffensiveCentristDemocracy</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Inoffensive Centrist Democracy&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-101"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#IronFistConsumerists"
+      ><span class="hs-identifier hs-var"
+	>IronFistConsumerists</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Iron Fist Consumerists&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-102"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#IronFistSocialists"
+      ><span class="hs-identifier hs-var"
+	>IronFistSocialists</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Iron Fist Socialists&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-103"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#LeftLeaningCollegeState"
+      ><span class="hs-identifier hs-var"
+	>LeftLeaningCollegeState</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Left-Leaning College State&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-104"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#LeftWingUtopia"
+      ><span class="hs-identifier hs-var"
+	>LeftWingUtopia</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Left-wing Utopia&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-105"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#LiberalDemocraticSocialists"
+      ><span class="hs-identifier hs-var"
+	>LiberalDemocraticSocialists</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Liberal Democratic Socialists&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-106"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#LibertarianPoliceState"
+      ><span class="hs-identifier hs-var"
+	>LibertarianPoliceState</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Libertarian Police State&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-107"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#MoralisticDemocracy"
+      ><span class="hs-identifier hs-var"
+	>MoralisticDemocracy</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Moralistic Democracy&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-108"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#NewYorkTimesDemocracy"
+      ><span class="hs-identifier hs-var"
+	>NewYorkTimesDemocracy</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;New York Times Democracy&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-109"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#PsychoticDictatorship"
+      ><span class="hs-identifier hs-var"
+	>PsychoticDictatorship</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Psychotic Dictatorship&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-110"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#RightWingUtopia"
+      ><span class="hs-identifier hs-var"
+	>RightWingUtopia</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Right-wing Utopia&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-111"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#ScandinavianLiberalParadise"
+      ><span class="hs-identifier hs-var"
+	>ScandinavianLiberalParadise</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Scandinavian Liberal Paradise&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-112"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Types.html#TyrannyByMajority"
+      ><span class="hs-identifier hs-var"
+	>TyrannyByMajority</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Tyranny by Majority&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-113"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-114"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-115"
+      ></a
+      ><span class="hs-comment"
+      >-- | A vote in the General Assembly or Security Council.</span
+      ><span
+      >
+</span
+      ><a name="line-116"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-117"
+      ></a
+      ><span class="hs-comment"
+      >-- @Just True@ and @Just False@ mean \&quot;for\&quot; and \&quot;against\&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-118"
+      ></a
+      ><span class="hs-comment"
+      >-- respectively, while @Nothing@ means that the nation did not vote at</span
+      ><span
+      >
+</span
+      ><a name="line-119"
+      ></a
+      ><span class="hs-comment"
+      >-- all.</span
+      ><span
+      >
+</span
+      ><a name="line-120"
+      ></a
+      ><span class="hs-keyword"
+      >type</span
+      ><span
+      > </span
+      ><a name="WAVote"
+      ><a href="NationStates.Types.html#WAVote"
+	><span class="hs-identifier"
+	  >WAVote</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Maybe</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Bool</span
+      ><span
+      >
+</span
+      ><a name="line-121"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-122"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-123"
+      ></a
+      ><span class="hs-identifier"
+      >readWAVote</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Maybe</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#WAVote"
+      ><span class="hs-identifier hs-type"
+	>WAVote</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-124"
+      ></a
+      ><a name="readWAVote"
+      ><a href="NationStates.Types.html#readWAVote"
+	><span class="hs-identifier"
+	  >readWAVote</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627418784"
+      ><a href="#local-1627418784"
+	><span class="hs-identifier"
+	  >s</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >case</span
+      ><span
+      > </span
+      ><a href="#local-1627418784"
+      ><span class="hs-identifier hs-var"
+	>s</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >of</span
+      ><span
+      >
+</span
+      ><a name="line-125"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;UNDECIDED&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Nothing</span
+      ><span
+      >
+</span
+      ><a name="line-126"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;FOR&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >True</span
+      ><span
+      >
+</span
+      ><a name="line-127"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;AGAINST&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >False</span
+      ><span
+      >
+</span
+      ><a name="line-128"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier"
+      >_</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Nothing</span
+      ><span
+      >
+</span
+      ><a name="line-129"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-130"
+      ></a
+      ><span class="hs-identifier"
+      >readWAVote'</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Maybe</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-type"
+      >Maybe</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#WAVote"
+      ><span class="hs-identifier hs-type"
+	>WAVote</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-131"
+      ></a
+      ><a name="readWAVote%27"
+      ><a href="NationStates.Types.html#readWAVote%27"
+	><span class="hs-identifier"
+	  >readWAVote'</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627418785"
+      ><a href="#local-1627418785"
+	><span class="hs-identifier"
+	  >s</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-132"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >null</span
+      ><span
+      > </span
+      ><a href="#local-1627418785"
+      ><span class="hs-identifier hs-var"
+	>s</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Nothing</span
+      ><span
+      >
+</span
+      ><a name="line-133"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >otherwise</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >&lt;$&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#readWAVote"
+      ><span class="hs-identifier hs-var"
+	>readWAVote</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627418785"
+      ><span class="hs-identifier hs-var"
+	>s</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-134"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-135"
+      ></a
+      ><span class="hs-identifier"
+      >showWAVote</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#WAVote"
+      ><span class="hs-identifier hs-type"
+	>WAVote</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-136"
+      ></a
+      ><a name="showWAVote"
+      ><a href="NationStates.Types.html#showWAVote"
+	><span class="hs-identifier"
+	  >showWAVote</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627419090"
+      ><a href="#local-1627419090"
+	><span class="hs-identifier"
+	  >v</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >case</span
+      ><span
+      > </span
+      ><a href="#local-1627419090"
+      ><span class="hs-identifier hs-var"
+	>v</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >of</span
+      ><span
+      >
+</span
+      ><a name="line-137"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier hs-var"
+      >Nothing</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;UNDECIDED&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-138"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >True</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;FOR&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-139"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >False</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;AGAINST&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-140"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-141"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-142"
+      ></a
+      ><span class="hs-identifier"
+      >readWAStatus</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Maybe</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Bool</span
+      ><span
+      >
+</span
+      ><a name="line-143"
+      ></a
+      ><a name="readWAStatus"
+      ><a href="NationStates.Types.html#readWAStatus"
+	><span class="hs-identifier"
+	  >readWAStatus</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627419091"
+      ><a href="#local-1627419091"
+	><span class="hs-identifier"
+	  >s</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >case</span
+      ><span
+      > </span
+      ><a href="#local-1627419091"
+      ><span class="hs-identifier hs-var"
+	>s</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >of</span
+      ><span
+      >
+</span
+      ><a name="line-144"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;WA Member&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >True</span
+      ><span
+      >
+</span
+      ><a name="line-145"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-string"
+      >&quot;Non-member&quot;</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >False</span
+      ><span
+      >
+</span
+      ><a name="line-146"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier"
+      >_</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Nothing</span
+      ><span
+      >
+</span
+      ><a name="line-147"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-148"
+      ></a
+      ><span class="hs-identifier"
+      >showWAStatus</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Bool</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-149"
+      ></a
+      ><a name="showWAStatus"
+      ><a href="NationStates.Types.html#showWAStatus"
+	><span class="hs-identifier"
+	  >showWAStatus</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627419092"
+      ><a href="#local-1627419092"
+	><span class="hs-identifier"
+	  >v</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >case</span
+      ><span
+      > </span
+      ><a href="#local-1627419092"
+      ><span class="hs-identifier hs-var"
+	>v</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >of</span
+      ><span
+      >
+</span
+      ><a name="line-150"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier hs-var"
+      >True</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;WA Member&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-151"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier hs-var"
+      >False</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Non-member&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-152"
+      ></a
+      ></pre
+    ></body
+  ></html
+>

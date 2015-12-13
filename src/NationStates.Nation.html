@@ -1,0 +1,4537 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><link rel="stylesheet" type="text/css" href="style.css"
+     /><script type="text/javascript" src="highlight.js"
+    ></script
+    ></head
+  ><body
+  ><pre
+    ><span class="hs-pragma"
+      >{-# LANGUAGE GeneralizedNewtypeDeriving #-}</span
+      ><span
+      >
+</span
+      ><a name="line-2"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-3"
+      ></a
+      ><span class="hs-comment"
+      >-- | The Nation API.</span
+      ><span
+      >
+</span
+      ><a name="line-4"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-5"
+      ></a
+      ><span class="hs-comment"
+      >-- This module should be imported qualified, to prevent name clashes:</span
+      ><span
+      >
+</span
+      ><a name="line-6"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-7"
+      ></a
+      ><span class="hs-comment"
+      >-- @</span
+      ><span
+      >
+</span
+      ><a name="line-8"
+      ></a
+      ><span class="hs-comment"
+      >-- import NationStates</span
+      ><span
+      >
+</span
+      ><a name="line-9"
+      ></a
+      ><span class="hs-comment"
+      >-- import qualified NationStates.Nation as Nation</span
+      ><span
+      >
+</span
+      ><a name="line-10"
+      ></a
+      ><span class="hs-comment"
+      >-- @</span
+      ><span
+      >
+</span
+      ><a name="line-11"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-12"
+      ></a
+      ><span class="hs-comment"
+      >-- In general, this module follows the terminology used in the</span
+      ><span
+      >
+</span
+      ><a name="line-13"
+      ></a
+      ><span class="hs-comment"
+      >-- &lt;https://www.nationstates.net/pages/api.html#nationapi official documentation&gt;,</span
+      ><span
+      >
+</span
+      ><a name="line-14"
+      ></a
+      ><span class="hs-comment"
+      >-- except when it clashes with Haskell keywords. For instance, the</span
+      ><span
+      >
+</span
+      ><a name="line-15"
+      ></a
+      ><span class="hs-comment"
+      >-- @type@ shard has been renamed to 'type_'.</span
+      ><span
+      >
+</span
+      ><a name="line-16"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-17"
+      ></a
+      ><span class="hs-comment"
+      >-- Here's a short example:</span
+      ><span
+      >
+</span
+      ><a name="line-18"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-19"
+      ></a
+      ><span class="hs-comment"
+      >-- @</span
+      ><span
+      >
+</span
+      ><a name="line-20"
+      ></a
+      ><span class="hs-comment"
+      >-- import NationStates</span
+      ><span
+      >
+</span
+      ><a name="line-21"
+      ></a
+      ><span class="hs-comment"
+      >-- import qualified NationStates.Nation as Nation</span
+      ><span
+      >
+</span
+      ><a name="line-22"
+      ></a
+      ><span class="hs-comment"
+      >-- import Text.Printf</span
+      ><span
+      >
+</span
+      ><a name="line-23"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-24"
+      ></a
+      ><span class="hs-comment"
+      >-- main = do</span
+      ><span
+      >
+</span
+      ><a name="line-25"
+      ></a
+      ><span class="hs-comment"
+      >--     c &lt;- 'NationStates.newContext' &quot;ExampleBot/2000&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-26"
+      ></a
+      ><span class="hs-comment"
+      >--     (name, motto) &lt;- Nation.'run' &quot;Montesardo-East Adanzi&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-27"
+      ></a
+      ><span class="hs-comment"
+      >--         ((,) \&lt;$\&gt; Nation.'name' \&lt;*\&gt; Nation.'motto') c</span
+      ><span
+      >
+</span
+      ><a name="line-28"
+      ></a
+      ><span class="hs-comment"
+      >--     printf &quot;%s has the motto: %s\\n&quot; name motto</span
+      ><span
+      >
+</span
+      ><a name="line-29"
+      ></a
+      ><span class="hs-comment"
+      >-- @</span
+      ><span
+      >
+</span
+      ><a name="line-30"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-31"
+      ></a
+      ><span class="hs-keyword"
+      >module</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >NationStates</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Nation</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span
+      >
+</span
+      ><a name="line-32"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-33"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-comment"
+      >-- * Running queries</span
+      ><span
+      >
+</span
+      ><a name="line-34"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-glyph"
+      >..</span
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-35"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#run"
+      ><span class="hs-identifier hs-var"
+	>run</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-36"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-37"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-comment"
+      >-- * Shards</span
+      ><span
+      >
+</span
+      ><a name="line-38"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#name"
+      ><span class="hs-identifier hs-var"
+	>name</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-39"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#fullname"
+      ><span class="hs-identifier hs-var"
+	>fullname</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-40"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#type_"
+      ><span class="hs-identifier hs-var"
+	>type_</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-41"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#motto"
+      ><span class="hs-identifier hs-var"
+	>motto</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-42"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#category"
+      ><span class="hs-identifier hs-var"
+	>category</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-43"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#wa"
+      ><span class="hs-identifier hs-var"
+	>wa</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-44"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#endorsements"
+      ><span class="hs-identifier hs-var"
+	>endorsements</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-45"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#gavote"
+      ><span class="hs-identifier hs-var"
+	>gavote</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-46"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#scvote"
+      ><span class="hs-identifier hs-var"
+	>scvote</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-47"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#freedom"
+      ><span class="hs-identifier hs-var"
+	>freedom</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-48"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#region"
+      ><span class="hs-identifier hs-var"
+	>region</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-49"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#population"
+      ><span class="hs-identifier hs-var"
+	>population</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-50"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#tax"
+      ><span class="hs-identifier hs-var"
+	>tax</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-51"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#animal"
+      ><span class="hs-identifier hs-var"
+	>animal</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-52"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#animaltrait"
+      ><span class="hs-identifier hs-var"
+	>animaltrait</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-53"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#currency"
+      ><span class="hs-identifier hs-var"
+	>currency</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-54"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#flag"
+      ><span class="hs-identifier hs-var"
+	>flag</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-55"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#banner"
+      ><span class="hs-identifier hs-var"
+	>banner</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-56"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#banners"
+      ><span class="hs-identifier hs-var"
+	>banners</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-57"
+      ></a
+      ><span class="hs-comment"
+      >--    majorindustry,</span
+      ><span
+      >
+</span
+      ><a name="line-58"
+      ></a
+      ><span class="hs-comment"
+      >--    crime,</span
+      ><span
+      >
+</span
+      ><a name="line-59"
+      ></a
+      ><span class="hs-comment"
+      >--    sensibilities,</span
+      ><span
+      >
+</span
+      ><a name="line-60"
+      ></a
+      ><span class="hs-comment"
+      >--    govtpriority,</span
+      ><span
+      >
+</span
+      ><a name="line-61"
+      ></a
+      ><span class="hs-comment"
+      >--    govt,</span
+      ><span
+      >
+</span
+      ><a name="line-62"
+      ></a
+      ><span class="hs-comment"
+      >--    govtdesc,</span
+      ><span
+      >
+</span
+      ><a name="line-63"
+      ></a
+      ><span class="hs-comment"
+      >--    industrydesc,</span
+      ><span
+      >
+</span
+      ><a name="line-64"
+      ></a
+      ><span class="hs-comment"
+      >--    notable,</span
+      ><span
+      >
+</span
+      ><a name="line-65"
+      ></a
+      ><span class="hs-comment"
+      >--    admirable,</span
+      ><span
+      >
+</span
+      ><a name="line-66"
+      ></a
+      ><span class="hs-comment"
+      >--    founded,</span
+      ><span
+      >
+</span
+      ><a name="line-67"
+      ></a
+      ><span class="hs-comment"
+      >--    firstlogin,</span
+      ><span
+      >
+</span
+      ><a name="line-68"
+      ></a
+      ><span class="hs-comment"
+      >--    lastlogin,</span
+      ><span
+      >
+</span
+      ><a name="line-69"
+      ></a
+      ><span class="hs-comment"
+      >--    lastactivity,</span
+      ><span
+      >
+</span
+      ><a name="line-70"
+      ></a
+      ><span class="hs-comment"
+      >--    influence,</span
+      ><span
+      >
+</span
+      ><a name="line-71"
+      ></a
+      ><span class="hs-comment"
+      >--    freedomscores,</span
+      ><span
+      >
+</span
+      ><a name="line-72"
+      ></a
+      ><span class="hs-comment"
+      >--    publicsector,</span
+      ><span
+      >
+</span
+      ><a name="line-73"
+      ></a
+      ><span class="hs-comment"
+      >--    deaths,</span
+      ><span
+      >
+</span
+      ><a name="line-74"
+      ></a
+      ><span class="hs-comment"
+      >--    leader,</span
+      ><span
+      >
+</span
+      ><a name="line-75"
+      ></a
+      ><span class="hs-comment"
+      >--    capital,</span
+      ><span
+      >
+</span
+      ><a name="line-76"
+      ></a
+      ><span class="hs-comment"
+      >--    religion,</span
+      ><span
+      >
+</span
+      ><a name="line-77"
+      ></a
+      ><span class="hs-comment"
+      >--    customleader,</span
+      ><span
+      >
+</span
+      ><a name="line-78"
+      ></a
+      ><span class="hs-comment"
+      >--    customcapital,</span
+      ><span
+      >
+</span
+      ><a name="line-79"
+      ></a
+      ><span class="hs-comment"
+      >--    customreligion,</span
+      ><span
+      >
+</span
+      ><a name="line-80"
+      ></a
+      ><span class="hs-comment"
+      >--    rcensus,</span
+      ><span
+      >
+</span
+      ><a name="line-81"
+      ></a
+      ><span class="hs-comment"
+      >--    wcensus,</span
+      ><span
+      >
+</span
+      ><a name="line-82"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#censusscore"
+      ><span class="hs-identifier hs-var"
+	>censusscore</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-83"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Nation.html#censusscore%27"
+      ><span class="hs-identifier hs-var"
+	>censusscore'</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-84"
+      ></a
+      ><span class="hs-comment"
+      >--    legislation,</span
+      ><span
+      >
+</span
+      ><a name="line-85"
+      ></a
+      ><span class="hs-comment"
+      >--    happenings,</span
+      ><span
+      >
+</span
+      ><a name="line-86"
+      ></a
+      ><span class="hs-comment"
+      >--    demonym,</span
+      ><span
+      >
+</span
+      ><a name="line-87"
+      ></a
+      ><span class="hs-comment"
+      >--    demonym2,</span
+      ><span
+      >
+</span
+      ><a name="line-88"
+      ></a
+      ><span class="hs-comment"
+      >--    demonym2plural,</span
+      ><span
+      >
+</span
+      ><a name="line-89"
+      ></a
+      ><span class="hs-comment"
+      >--    factbooks,</span
+      ><span
+      >
+</span
+      ><a name="line-90"
+      ></a
+      ><span class="hs-comment"
+      >--    factbooklist,</span
+      ><span
+      >
+</span
+      ><a name="line-91"
+      ></a
+      ><span class="hs-comment"
+      >--    dispatches,</span
+      ><span
+      >
+</span
+      ><a name="line-92"
+      ></a
+      ><span class="hs-comment"
+      >--    dispatchlist,</span
+      ><span
+      >
+</span
+      ><a name="line-93"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-94"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-95"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-96"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-97"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Control</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Applicative</span
+      ><span
+      >
+</span
+      ><a name="line-98"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Data</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Maybe</span
+      ><span
+      >
+</span
+      ><a name="line-99"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >qualified</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Data</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Map</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >as</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Map</span
+      ><span
+      >
+</span
+      ><a name="line-100"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >qualified</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Data</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >MultiSet</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >as</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >MultiSet</span
+      ><span
+      >
+</span
+      ><a name="line-101"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Text</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >XML</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Light</span
+      ><span
+      >
+</span
+      ><a name="line-102"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Prelude</span
+      ><span
+      >  </span
+      ><span class="hs-comment"
+      >-- GHC 7.10</span
+      ><span
+      >
+</span
+      ><a name="line-103"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-104"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html"
+      ><span class="hs-identifier"
+	>NationStates</span
+	><span class="hs-operator"
+	>.</span
+	><span class="hs-identifier"
+	>Core</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-105"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-106"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-107"
+      ></a
+      ><span class="hs-comment"
+      >-- | A request to the Nation API.</span
+      ><span
+      >
+</span
+      ><a name="line-108"
+      ></a
+      ><span class="hs-keyword"
+      >newtype</span
+      ><span
+      > </span
+      ><a name="Nation"
+      ><a href="NationStates.Nation.html#Nation"
+	><span class="hs-identifier"
+	  >Nation</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627443898"
+      ><a href="#local-1627443898"
+	><span class="hs-identifier"
+	  >a</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a name="Nation"
+      ><a href="NationStates.Nation.html#Nation"
+	><span class="hs-identifier"
+	  >Nation</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >{</span
+      ><span
+      > </span
+      ><a name="unNation"
+      ><a href="NationStates.Nation.html#unNation"
+	><span class="hs-identifier"
+	  >unNation</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#NS"
+      ><span class="hs-identifier hs-type"
+	>NS</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627443898"
+      ><span class="hs-identifier hs-type"
+	>a</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >}</span
+      ><span
+      >
+</span
+      ><a name="line-109"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-keyword"
+      >deriving</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-type"
+      >Functor</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Applicative</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-110"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-111"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-112"
+      ></a
+      ><span class="hs-comment"
+      >-- | Perform a request to the Nation API.</span
+      ><span
+      >
+</span
+      ><a name="line-113"
+      ></a
+      ><span class="hs-identifier"
+      >run</span
+      ><span
+      >
+</span
+      ><a name="line-114"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-115"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- ^ Nation name</span
+      ><span
+      >
+</span
+      ><a name="line-116"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627443899"
+      ><span class="hs-identifier hs-type"
+	>a</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-117"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- ^ Requested shards</span
+      ><span
+      >
+</span
+      ><a name="line-118"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#Context"
+      ><span class="hs-identifier hs-type"
+	>Context</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-119"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- ^ Connection manager</span
+      ><span
+      >
+</span
+      ><a name="line-120"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >IO</span
+      ><span
+      > </span
+      ><a href="#local-1627443899"
+      ><span class="hs-identifier hs-type"
+	>a</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-121"
+      ></a
+      ><a name="run"
+      ><a href="NationStates.Nation.html#run"
+	><span class="hs-identifier"
+	  >run</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627443900"
+      ><a href="#local-1627443900"
+	><span class="hs-identifier"
+	  >nation</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#requestNS"
+      ><span class="hs-identifier hs-var"
+	>requestNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-string"
+      >&quot;nation&quot;</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><a href="#local-1627443900"
+      ><span class="hs-identifier hs-var"
+	>nation</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#unNation"
+      ><span class="hs-identifier hs-var"
+	>unNation</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-122"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-123"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-124"
+      ></a
+      ><span class="hs-comment"
+      >-- | Short name.</span
+      ><span
+      >
+</span
+      ><a name="line-125"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-126"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; &quot;Testlandia&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-127"
+      ></a
+      ><span class="hs-identifier"
+      >name</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-128"
+      ></a
+      ><a name="name"
+      ><a href="NationStates.Nation.html#name"
+	><span class="hs-identifier"
+	  >name</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;name&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;NAME&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-129"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-130"
+      ></a
+      ><span class="hs-comment"
+      >-- | Full name, including pre-title.</span
+      ><span
+      >
+</span
+      ><a name="line-131"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-132"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; &quot;The Republic of Testlandia&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-133"
+      ></a
+      ><span class="hs-identifier"
+      >fullname</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-134"
+      ></a
+      ><a name="fullname"
+      ><a href="NationStates.Nation.html#fullname"
+	><span class="hs-identifier"
+	  >fullname</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;fullname&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;FULLNAME&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-135"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-136"
+      ></a
+      ><span class="hs-comment"
+      >-- | Nation type.</span
+      ><span
+      >
+</span
+      ><a name="line-137"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-138"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; &quot;Republic&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-139"
+      ></a
+      ><span class="hs-identifier"
+      >type_</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-140"
+      ></a
+      ><a name="type_"
+      ><a href="NationStates.Nation.html#type_"
+	><span class="hs-identifier"
+	  >type_</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;type&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;TYPE&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-141"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-142"
+      ></a
+      ><span class="hs-comment"
+      >-- | Motto.</span
+      ><span
+      >
+</span
+      ><a name="line-143"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-144"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; &quot;It's a feature!&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-145"
+      ></a
+      ><span class="hs-identifier"
+      >motto</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-146"
+      ></a
+      ><a name="motto"
+      ><a href="NationStates.Nation.html#motto"
+	><span class="hs-identifier"
+	  >motto</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;motto&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;MOTTO&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-147"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-148"
+      ></a
+      ><span class="hs-comment"
+      >-- | Nation category.</span
+      ><span
+      >
+</span
+      ><a name="line-149"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-150"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; InoffensiveCentristDemocracy</span
+      ><span
+      >
+</span
+      ><a name="line-151"
+      ></a
+      ><span class="hs-identifier"
+      >category</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#WACategory"
+      ><span class="hs-identifier hs-type"
+	>WACategory</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-152"
+      ></a
+      ><a name="category"
+      ><a href="NationStates.Nation.html#category"
+	><span class="hs-identifier"
+	  >category</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fmap</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#expect"
+      ><span class="hs-identifier hs-var"
+	>expect</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;category&quot;</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >&lt;*&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#readWACategory"
+      ><span class="hs-identifier hs-var"
+	>readWACategory</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      >
+</span
+      ><a name="line-153"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;category&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;CATEGORY&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-154"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-155"
+      ></a
+      ><span class="hs-comment"
+      >-- | Whether the nation is in the World Assembly.</span
+      ><span
+      >
+</span
+      ><a name="line-156"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-157"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; True</span
+      ><span
+      >
+</span
+      ><a name="line-158"
+      ></a
+      ><span class="hs-identifier"
+      >wa</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Bool</span
+      ><span
+      >
+</span
+      ><a name="line-159"
+      ></a
+      ><a name="wa"
+      ><a href="NationStates.Nation.html#wa"
+	><span class="hs-identifier"
+	  >wa</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fmap</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#expect"
+      ><span class="hs-identifier hs-var"
+	>expect</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;WA status&quot;</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >&lt;*&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#readWAStatus"
+      ><span class="hs-identifier hs-var"
+	>readWAStatus</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;wa&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;UNSTATUS&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-160"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-161"
+      ></a
+      ><span class="hs-comment"
+      >-- | List of endorsements received.</span
+      ><span
+      >
+</span
+      ><a name="line-162"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-163"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; [&quot;jlink&quot;,&quot;translenia&quot;,&quot;the_vines&quot;]</span
+      ><span
+      >
+</span
+      ><a name="line-164"
+      ></a
+      ><span class="hs-identifier"
+      >endorsements</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >[</span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span class="hs-special"
+      >]</span
+      ><span
+      >
+</span
+      ><a name="line-165"
+      ></a
+      ><a name="endorsements"
+      ><a href="NationStates.Nation.html#endorsements"
+	><span class="hs-identifier"
+	  >endorsements</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fmap</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#wordsBy"
+      ><span class="hs-identifier hs-var"
+	>wordsBy</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-operator hs-var"
+      >==</span
+      ><span
+      > </span
+      ><span class="hs-char"
+      >','</span
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      >
+</span
+      ><a name="line-166"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;endorsements&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;ENDORSEMENTS&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-167"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-168"
+      ></a
+      ><span class="hs-comment"
+      >-- | General assembly vote.</span
+      ><span
+      >
+</span
+      ><a name="line-169"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-170"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; Just True</span
+      ><span
+      >
+</span
+      ><a name="line-171"
+      ></a
+      ><span class="hs-identifier"
+      >gavote</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-type"
+      >Maybe</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#WAVote"
+      ><span class="hs-identifier hs-type"
+	>WAVote</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-172"
+      ></a
+      ><a name="gavote"
+      ><a href="NationStates.Nation.html#gavote"
+	><span class="hs-identifier"
+	  >gavote</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fmap</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#expect"
+      ><span class="hs-identifier hs-var"
+	>expect</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;General Assembly vote&quot;</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >&lt;*&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#readWAVote%27"
+      ><span class="hs-identifier hs-var"
+	>readWAVote'</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      >
+</span
+      ><a name="line-173"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;gavote&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;GAVOTE&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-174"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-175"
+      ></a
+      ><span class="hs-comment"
+      >-- | Security council vote.</span
+      ><span
+      >
+</span
+      ><a name="line-176"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-177"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; Nothing</span
+      ><span
+      >
+</span
+      ><a name="line-178"
+      ></a
+      ><span class="hs-identifier"
+      >scvote</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-type"
+      >Maybe</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#WAVote"
+      ><span class="hs-identifier hs-type"
+	>WAVote</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-179"
+      ></a
+      ><a name="scvote"
+      ><a href="NationStates.Nation.html#scvote"
+	><span class="hs-identifier"
+	  >scvote</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fmap</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#expect"
+      ><span class="hs-identifier hs-var"
+	>expect</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;Security Council vote&quot;</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >&lt;*&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html#readWAVote%27"
+      ><span class="hs-identifier hs-var"
+	>readWAVote'</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      >
+</span
+      ><a name="line-180"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;scvote&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;SCVOTE&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-181"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-182"
+      ></a
+      ><span class="hs-comment"
+      >-- | Description of civil rights, economy, and political freedoms.</span
+      ><span
+      >
+</span
+      ><a name="line-183"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-184"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; (&quot;Excellent&quot;,&quot;Strong&quot;,&quot;Very Good&quot;)</span
+      ><span
+      >
+</span
+      ><a name="line-185"
+      ></a
+      ><span class="hs-identifier"
+      >freedom</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-186"
+      ></a
+      ><a name="freedom"
+      ><a href="NationStates.Nation.html#freedom"
+	><span class="hs-identifier"
+	  >freedom</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS%27"
+      ><span class="hs-identifier hs-var"
+	>makeNS'</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#shard"
+      ><span class="hs-identifier hs-var"
+	>shard</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;freedom&quot;</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><a href="#local-1627443901"
+      ><span class="hs-identifier hs-var"
+	>parse</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-187"
+      ></a
+      ><span
+      >  </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-188"
+      ></a
+      ><span
+      >    </span
+      ><a name="local-1627443901"
+      ><a href="#local-1627443901"
+	><span class="hs-identifier"
+	  >parse</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >_</span
+      ><span
+      > </span
+      ><a name="local-1627443902"
+      ><a href="#local-1627443902"
+	><span class="hs-identifier"
+	  >root</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-189"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a name="local-1627443903"
+      ><a href="#local-1627443903"
+	><span class="hs-identifier"
+	  >parent</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >findChild</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-var"
+      >unqual</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;FREEDOM&quot;</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><a href="#local-1627443902"
+      ><span class="hs-identifier hs-var"
+	>root</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-190"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >[</span
+      ><a name="local-1627443904"
+      ><a href="#local-1627443904"
+	><span class="hs-identifier"
+	  >c</span
+	  ></a
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><a name="local-1627443905"
+      ><a href="#local-1627443905"
+	><span class="hs-identifier"
+	  >e</span
+	  ></a
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><a name="local-1627443906"
+      ><a href="#local-1627443906"
+	><span class="hs-identifier"
+	  >p</span
+	  ></a
+	></a
+      ><span class="hs-special"
+      >]</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >map</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >strContent</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >elChildren</span
+      ><span
+      > </span
+      ><a href="#local-1627443903"
+      ><span class="hs-identifier hs-var"
+	>parent</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-191"
+      ></a
+      ><span
+      >            </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="#local-1627443904"
+      ><span class="hs-identifier hs-var"
+	>c</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><a href="#local-1627443905"
+      ><span class="hs-identifier hs-var"
+	>e</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><a href="#local-1627443906"
+      ><span class="hs-identifier hs-var"
+	>p</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-192"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >otherwise</span
+      ><span
+      >
+</span
+      ><a name="line-193"
+      ></a
+      ><span
+      >            </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >error</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;could not find freedom descriptors&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-194"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-195"
+      ></a
+      ><span class="hs-comment"
+      >-- | Resident region.</span
+      ><span
+      >
+</span
+      ><a name="line-196"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-197"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; &quot;Testregionia&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-198"
+      ></a
+      ><span class="hs-identifier"
+      >region</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-199"
+      ></a
+      ><a name="region"
+      ><a href="NationStates.Nation.html#region"
+	><span class="hs-identifier"
+	  >region</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;region&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;REGION&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-200"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-201"
+      ></a
+      ><span class="hs-comment"
+      >-- | Population, in millions.</span
+      ><span
+      >
+</span
+      ><a name="line-202"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-203"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; 25764</span
+      ><span
+      >
+</span
+      ><a name="line-204"
+      ></a
+      ><span class="hs-identifier"
+      >population</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Integer</span
+      ><span
+      >
+</span
+      ><a name="line-205"
+      ></a
+      ><a name="population"
+      ><a href="NationStates.Nation.html#population"
+	><span class="hs-identifier"
+	  >population</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fmap</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#expect"
+      ><span class="hs-identifier hs-var"
+	>expect</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;population&quot;</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >&lt;*&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >readMaybe</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      >
+</span
+      ><a name="line-206"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;population&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;POPULATION&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-207"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-208"
+      ></a
+      ><span class="hs-comment"
+      >-- | Income tax, percent.</span
+      ><span
+      >
+</span
+      ><a name="line-209"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-210"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; 83.6</span
+      ><span
+      >
+</span
+      ><a name="line-211"
+      ></a
+      ><span class="hs-identifier"
+      >tax</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Double</span
+      ><span
+      >
+</span
+      ><a name="line-212"
+      ></a
+      ><a name="tax"
+      ><a href="NationStates.Nation.html#tax"
+	><span class="hs-identifier"
+	  >tax</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fmap</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#expect"
+      ><span class="hs-identifier hs-var"
+	>expect</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;tax&quot;</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >&lt;*&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >readMaybe</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      >
+</span
+      ><a name="line-213"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;tax&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;TAX&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-214"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-215"
+      ></a
+      ><span class="hs-comment"
+      >-- | National animal.</span
+      ><span
+      >
+</span
+      ><a name="line-216"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-217"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; &quot;sea-snake&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-218"
+      ></a
+      ><span class="hs-identifier"
+      >animal</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-219"
+      ></a
+      ><a name="animal"
+      ><a href="NationStates.Nation.html#animal"
+	><span class="hs-identifier"
+	  >animal</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;animal&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;ANIMAL&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-220"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-221"
+      ></a
+      ><span class="hs-comment"
+      >-- | A short phrase describing the animal.</span
+      ><span
+      >
+</span
+      ><a name="line-222"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-223"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; &quot;is also the nation's favorite main course&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-224"
+      ></a
+      ><span class="hs-identifier"
+      >animaltrait</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-225"
+      ></a
+      ><a name="animaltrait"
+      ><a href="NationStates.Nation.html#animaltrait"
+	><span class="hs-identifier"
+	  >animaltrait</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;animaltrait&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;ANIMALTRAIT&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-226"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-227"
+      ></a
+      ><span class="hs-comment"
+      >-- | Currency.</span
+      ><span
+      >
+</span
+      ><a name="line-228"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-229"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; &quot;&#9734;star&#9734;&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-230"
+      ></a
+      ><span class="hs-identifier"
+      >currency</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-231"
+      ></a
+      ><a name="currency"
+      ><a href="NationStates.Nation.html#currency"
+	><span class="hs-identifier"
+	  >currency</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;currency&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;CURRENCY&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-232"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-233"
+      ></a
+      ><span class="hs-comment"
+      >-- | Flag URL.</span
+      ><span
+      >
+</span
+      ><a name="line-234"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-235"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; &quot;http://www.nationstates.net/images/flags/Switzerland.png&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-236"
+      ></a
+      ><span class="hs-identifier"
+      >flag</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-237"
+      ></a
+      ><a name="flag"
+      ><a href="NationStates.Nation.html#flag"
+	><span class="hs-identifier"
+	  >flag</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;flag&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;FLAG&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-238"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-239"
+      ></a
+      ><span class="hs-comment"
+      >-- | A suitable banner for this nation.</span
+      ><span
+      >
+</span
+      ><a name="line-240"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-241"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; &quot;v1&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-242"
+      ></a
+      ><span class="hs-identifier"
+      >banner</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-243"
+      ></a
+      ><a name="banner"
+      ><a href="NationStates.Nation.html#banner"
+	><span class="hs-identifier"
+	  >banner</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS"
+      ><span class="hs-identifier hs-var"
+	>makeNS</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;banner&quot;</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;BANNER&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-244"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-245"
+      ></a
+      ><span class="hs-comment"
+      >-- | A list of suitable banners for this nation.</span
+      ><span
+      >
+</span
+      ><a name="line-246"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-247"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; [&quot;v1&quot;,&quot;o4&quot;,&quot;b14&quot;,&quot;t23&quot;,&quot;m3&quot;]</span
+      ><span
+      >
+</span
+      ><a name="line-248"
+      ></a
+      ><span class="hs-identifier"
+      >banners</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >[</span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span class="hs-special"
+      >]</span
+      ><span
+      >
+</span
+      ><a name="line-249"
+      ></a
+      ><a name="banners"
+      ><a href="NationStates.Nation.html#banners"
+	><span class="hs-identifier"
+	  >banners</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS%27"
+      ><span class="hs-identifier hs-var"
+	>makeNS'</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#shard"
+      ><span class="hs-identifier hs-var"
+	>shard</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;banners&quot;</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><a href="#local-1627443907"
+      ><span class="hs-identifier hs-var"
+	>parse</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-250"
+      ></a
+      ><span
+      >  </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-251"
+      ></a
+      ><span
+      >    </span
+      ><a name="local-1627443907"
+      ><a href="#local-1627443907"
+	><span class="hs-identifier"
+	  >parse</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >_</span
+      ><span
+      > </span
+      ><a name="local-1627443908"
+      ><a href="#local-1627443908"
+	><span class="hs-identifier"
+	  >root</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-252"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a name="local-1627443909"
+      ><a href="#local-1627443909"
+	><span class="hs-identifier"
+	  >parent</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >findChild</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-var"
+      >unqual</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;BANNERS&quot;</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><a href="#local-1627443908"
+      ><span class="hs-identifier hs-var"
+	>root</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-253"
+      ></a
+      ><span
+      >            </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >map</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >strContent</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >elChildren</span
+      ><span
+      > </span
+      ><a href="#local-1627443909"
+      ><span class="hs-identifier hs-var"
+	>parent</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-254"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >otherwise</span
+      ><span
+      >
+</span
+      ><a name="line-255"
+      ></a
+      ><span
+      >            </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >error</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;could not find banner codes&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-256"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-257"
+      ></a
+      ><span class="hs-comment"
+      >-- | Query today's census.</span
+      ><span
+      >
+</span
+      ><a name="line-258"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-259"
+      ></a
+      ><span class="hs-comment"
+      >-- Returns the current census ID, along with its value.</span
+      ><span
+      >
+</span
+      ><a name="line-260"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-261"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; (24,6.0)</span
+      ><span
+      >
+</span
+      ><a name="line-262"
+      ></a
+      ><span class="hs-identifier"
+      >censusscore</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-type"
+      >Integer</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Double</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-263"
+      ></a
+      ><a name="censusscore"
+      ><a href="NationStates.Nation.html#censusscore"
+	><span class="hs-identifier"
+	  >censusscore</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS%27"
+      ><span class="hs-identifier hs-var"
+	>makeNS'</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#shard"
+      ><span class="hs-identifier hs-var"
+	>shard</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;censusscore&quot;</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><a href="#local-1627443910"
+      ><span class="hs-identifier hs-var"
+	>parse</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-264"
+      ></a
+      ><span
+      >  </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-265"
+      ></a
+      ><span
+      >    </span
+      ><a name="local-1627443910"
+      ><a href="#local-1627443910"
+	><span class="hs-identifier"
+	  >parse</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627443911"
+      ><a href="#local-1627443911"
+	><span class="hs-identifier"
+	  >q</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627443912"
+      ><a href="#local-1627443912"
+	><span class="hs-identifier"
+	  >root</span
+	  ></a
+	></a
+      ><span
+      >
+</span
+      ><a name="line-266"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a name="local-1627443921"
+      ><a href="#local-1627443921"
+	><span class="hs-identifier"
+	  >i</span
+	  ></a
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >_</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >MultiSet</span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span class="hs-identifier hs-var"
+      >minView</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >MultiSet</span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span class="hs-identifier hs-var"
+      >difference</span
+      ><span
+      > </span
+      ><a href="#local-1627443915"
+      ><span class="hs-identifier hs-var"
+	>response</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627443914"
+      ><span class="hs-identifier hs-var"
+	>request</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-267"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Just</span
+      ><span
+      > </span
+      ><a name="local-1627443922"
+      ><a href="#local-1627443922"
+	><span class="hs-identifier"
+	  >x</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >lookup</span
+      ><span
+      > </span
+      ><a href="#local-1627443921"
+      ><span class="hs-identifier hs-var"
+	>i</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627443913"
+      ><span class="hs-identifier hs-var"
+	>censusScores</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-268"
+      ></a
+      ><span
+      >            </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="#local-1627443921"
+      ><span class="hs-identifier hs-var"
+	>i</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><a href="#local-1627443922"
+      ><span class="hs-identifier hs-var"
+	>x</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      >
+</span
+      ><a name="line-269"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >otherwise</span
+      ><span
+      >
+</span
+      ><a name="line-270"
+      ></a
+      ><span
+      >            </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >error</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;could not find census score&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-271"
+      ></a
+      ><span
+      >      </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-272"
+      ></a
+      ><span
+      >        </span
+      ><a name="local-1627443913"
+      ><a href="#local-1627443913"
+	><span class="hs-identifier"
+	  >censusScores</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#extractCensusScores"
+      ><span class="hs-identifier hs-var"
+	>extractCensusScores</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627443912"
+      ><span class="hs-identifier hs-var"
+	>root</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-273"
+      ></a
+      ><span
+      >        </span
+      ><a name="local-1627443914"
+      ><a href="#local-1627443914"
+	><span class="hs-identifier"
+	  >request</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >MultiSet</span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span class="hs-identifier hs-var"
+      >mapMaybe</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >id</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >MultiSet</span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span class="hs-identifier hs-var"
+      >fromSet</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      >
+</span
+      ><a name="line-274"
+      ></a
+      ><span
+      >            </span
+      ><a href="NationStates.Core.html#queryShards"
+      ><span class="hs-identifier hs-var"
+	>queryShards</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627443911"
+      ><span class="hs-identifier hs-var"
+	>q</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >Map</span
+      ><span class="hs-operator hs-var"
+      >.!</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;censusscore&quot;</span
+      ><span
+      >
+</span
+      ><a name="line-275"
+      ></a
+      ><span
+      >        </span
+      ><a name="local-1627443915"
+      ><a href="#local-1627443915"
+	><span class="hs-identifier"
+	  >response</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >MultiSet</span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span class="hs-identifier hs-var"
+      >fromList</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >map</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fst</span
+      ><span
+      > </span
+      ><a href="#local-1627443913"
+      ><span class="hs-identifier hs-var"
+	>censusScores</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-276"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-277"
+      ></a
+      ><span class="hs-comment"
+      >-- | Query a census by its census ID.</span
+      ><span
+      >
+</span
+      ><a name="line-278"
+      ></a
+      ><span class="hs-comment"
+      >--</span
+      ><span
+      >
+</span
+      ><a name="line-279"
+      ></a
+      ><span class="hs-comment"
+      >-- &gt; 94.0</span
+      ><span
+      >
+</span
+      ><a name="line-280"
+      ></a
+      ><span class="hs-identifier"
+      >censusscore'</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Integer</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-type"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Double</span
+      ><span
+      >
+</span
+      ><a name="line-281"
+      ></a
+      ><a name="censusscore%27"
+      ><a href="NationStates.Nation.html#censusscore%27"
+	><span class="hs-identifier"
+	  >censusscore'</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627443923"
+      ><a href="#local-1627443923"
+	><span class="hs-identifier"
+	  >i</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#Nation"
+      ><span class="hs-identifier hs-var"
+	>Nation</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#makeNS%27"
+      ><span class="hs-identifier hs-var"
+	>makeNS'</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><a href="NationStates.Core.html#shard%27"
+      ><span class="hs-identifier hs-var"
+	>shard'</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;censusscore&quot;</span
+      ><span
+      > </span
+      ><a href="#local-1627443923"
+      ><span class="hs-identifier hs-var"
+	>i</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><a href="#local-1627443924"
+      ><span class="hs-identifier hs-var"
+	>parse</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-282"
+      ></a
+      ><span
+      >  </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-283"
+      ></a
+      ><span
+      >    </span
+      ><a name="local-1627443924"
+      ><a href="#local-1627443924"
+	><span class="hs-identifier"
+	  >parse</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >_</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >fromMaybe</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-var"
+      >error</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;could not find census &quot;</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >++</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >show</span
+      ><span
+      > </span
+      ><a href="#local-1627443923"
+      ><span class="hs-identifier hs-var"
+	>i</span
+	></a
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      >
+</span
+      ><a name="line-284"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-identifier hs-var"
+      >lookup</span
+      ><span
+      > </span
+      ><a href="#local-1627443923"
+      ><span class="hs-identifier hs-var"
+	>i</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >.</span
+      ><span
+      > </span
+      ><a href="NationStates.Nation.html#extractCensusScores"
+      ><span class="hs-identifier hs-var"
+	>extractCensusScores</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-285"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-286"
+      ></a
+      ><span class="hs-identifier"
+      >extractCensusScores</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Element</span
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >[</span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-type"
+      >Integer</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Double</span
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >]</span
+      ><span
+      >
+</span
+      ><a name="line-287"
+      ></a
+      ><a name="extractCensusScores"
+      ><a href="NationStates.Nation.html#extractCensusScores"
+	><span class="hs-identifier"
+	  >extractCensusScores</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627443925"
+      ><a href="#local-1627443925"
+	><span class="hs-identifier"
+	  >root</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >catMaybes</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >[</span
+      ><span
+      >
+</span
+      ><a name="line-288"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-special"
+      >,</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >&lt;$&gt;</span
+      ><span
+      > </span
+      ><a href="#local-1627443927"
+      ><span class="hs-identifier hs-var"
+	>maybeId</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >&lt;*&gt;</span
+      ><span
+      > </span
+      ><a href="#local-1627443928"
+      ><span class="hs-identifier hs-var"
+	>maybeValue</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >|</span
+      ><span
+      >
+</span
+      ><a name="line-289"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier hs-var"
+      >Elem</span
+      ><span
+      > </span
+      ><a name="local-1627443926"
+      ><a href="#local-1627443926"
+	><span class="hs-identifier"
+	  >e</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >elContent</span
+      ><span
+      > </span
+      ><a href="#local-1627443925"
+      ><span class="hs-identifier hs-var"
+	>root</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-290"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier hs-var"
+      >elName</span
+      ><span
+      > </span
+      ><a href="#local-1627443926"
+      ><span class="hs-identifier hs-var"
+	>e</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >==</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >unqual</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;CENSUSSCORE&quot;</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-291"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-keyword"
+      >let</span
+      ><span
+      > </span
+      ><a name="local-1627443927"
+      ><a href="#local-1627443927"
+	><span class="hs-identifier"
+	  >maybeId</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >readMaybe</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >=&lt;&lt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >findAttr</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-identifier hs-var"
+      >unqual</span
+      ><span
+      > </span
+      ><span class="hs-string"
+      >&quot;id&quot;</span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><a href="#local-1627443926"
+      ><span class="hs-identifier hs-var"
+	>e</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-292"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-keyword"
+      >let</span
+      ><span
+      > </span
+      ><a name="local-1627443928"
+      ><a href="#local-1627443928"
+	><span class="hs-identifier"
+	  >maybeValue</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >readMaybe</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >strContent</span
+      ><span
+      > </span
+      ><a href="#local-1627443926"
+      ><span class="hs-identifier hs-var"
+	>e</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >]</span
+      ><span
+      >
+</span
+      ><a name="line-293"
+      ></a
+      ></pre
+    ></body
+  ></html
+>

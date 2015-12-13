@@ -1,0 +1,773 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"
+     /><title
+    >NationStates.Region</title
+    ><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean"
+     /><script src="haddock-util.js" type="text/javascript"
+    ></script
+    ><script type="text/javascript"
+    >//<![CDATA[
+window.onload = function () {pageLoad();setSynopsis("mini_NationStates-Region.html");};
+//]]>
+</script
+    ></head
+  ><body
+  ><div id="package-header"
+    ><ul class="links" id="page-menu"
+      ><li
+	><a href="src/NationStates.Region.html"
+	  >Source</a
+	  ></li
+	><li
+	><a href="index.html"
+	  >Contents</a
+	  ></li
+	><li
+	><a href="doc-index.html"
+	  >Index</a
+	  ></li
+	></ul
+      ><p class="caption"
+      >nationstates-0.5.0.0: NationStates API client</p
+      ></div
+    ><div id="content"
+    ><div id="module-header"
+      ><table class="info"
+	><tr
+	  ><th
+	    >Safe Haskell</th
+	    ><td
+	    >None</td
+	    ></tr
+	  ><tr
+	  ><th
+	    >Language</th
+	    ><td
+	    >Haskell2010</td
+	    ></tr
+	  ></table
+	><p class="caption"
+	>NationStates.Region</p
+	></div
+      ><div id="table-of-contents"
+      ><p class="caption"
+	>Contents</p
+	><ul
+	><li
+	  ><a href="#g:1"
+	    >Running queries</a
+	    ></li
+	  ><li
+	  ><a href="#g:2"
+	    >Shards</a
+	    ></li
+	  ></ul
+	></div
+      ><div id="description"
+      ><p class="caption"
+	>Description</p
+	><div class="doc"
+	><p
+	  >The Region API.</p
+	  ><p
+	  >This module should be imported qualified, to prevent name clashes:</p
+	  ><pre
+	  >import NationStates
+import qualified NationStates.Region as Region
+</pre
+	  ><p
+	  >In general, this module follows the terminology used in the
+ <a href="https://www.nationstates.net/pages/api.html#regionapi"
+	    >official documentation</a
+	    >.</p
+	  ><p
+	  >Here's a short example:</p
+	  ><pre
+	  >import NationStates
+import qualified NationStates.Region as Region
+import Text.Printf
+
+main = do
+    c &lt;- <code
+	    ><a href="NationStates.html#v:newContext"
+	      >newContext</a
+	      ></code
+	    > &quot;ExampleBot/2000&quot;
+    (name, numnations, delegate) &lt;- Region.<code
+	    ><a href="NationStates-Region.html#v:run"
+	      >run</a
+	      ></code
+	    > &quot;Pony Lands&quot;
+        ((,,) &lt;$&gt; Region.<code
+	    ><a href="NationStates-Region.html#v:name"
+	      >name</a
+	      ></code
+	    > &lt;*&gt; Region.<code
+	    ><a href="NationStates-Region.html#v:numnations"
+	      >numnations</a
+	      ></code
+	    > &lt;*&gt; Region.<code
+	    ><a href="NationStates-Region.html#v:delegate"
+	      >delegate</a
+	      ></code
+	    >) c
+    printf &quot;%s has %d nations. Its delegate is %s\n&quot; name numnations delegate
+</pre
+	  ></div
+	></div
+      ><div id="synopsis"
+      ><p id="control.syn" class="caption expander" onclick="toggleSection('syn')"
+	>Synopsis</p
+	><ul id="section.syn" class="hide" onclick="toggleSection('syn')"
+	><li class="src short"
+	  ><span class="keyword"
+	    >newtype</span
+	    > <a href="#t:Region"
+	    >Region</a
+	    > a = <a href="#v:Region"
+	    >Region</a
+	    > {<ul class="subs"
+	    ><li
+	      ><a href="#v:unRegion"
+		>unRegion</a
+		> :: <a href="NationStates-Core.html#t:NS"
+		>NS</a
+		> a</li
+	      ></ul
+	    >}</li
+	  ><li class="src short"
+	  ><a href="#v:run"
+	    >run</a
+	    > :: <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    > -&gt; <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > a -&gt; <a href="NationStates-Core.html#t:Context"
+	    >Context</a
+	    > -&gt; <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/System-IO.html#t:IO"
+	    >IO</a
+	    > a</li
+	  ><li class="src short"
+	  ><a href="#v:name"
+	    >name</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:factbook"
+	    >factbook</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:numnations"
+	    >numnations</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:nations"
+	    >nations</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > [<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:delegate"
+	    >delegate</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Maybe.html#t:Maybe"
+	    >Maybe</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:delegatevotes"
+	    >delegatevotes</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:gavote"
+	    >gavote</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Maybe.html#t:Maybe"
+	    >Maybe</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    >, <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    >))</li
+	  ><li class="src short"
+	  ><a href="#v:scvote"
+	    >scvote</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Maybe.html#t:Maybe"
+	    >Maybe</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    >, <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    >))</li
+	  ><li class="src short"
+	  ><a href="#v:founder"
+	    >founder</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Maybe.html#t:Maybe"
+	    >Maybe</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:power"
+	    >power</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    ></li
+	  ><li class="src short"
+	  ><a href="#v:flag"
+	    >flag</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Maybe.html#t:Maybe"
+	    >Maybe</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >)</li
+	  ><li class="src short"
+	  ><a href="#v:embassies"
+	    >embassies</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > [<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >]</li
+	  ><li class="src short"
+	  ><a href="#v:tags"
+	    >tags</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > [<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >]</li
+	  ></ul
+	></div
+      ><div id="interface"
+      ><h1 id="g:1"
+	>Running queries</h1
+	><div class="top"
+	><p class="src"
+	  ><span class="keyword"
+	    >newtype</span
+	    > <a href="#t:Region" id="t:Region" class="def"
+	    >Region</a
+	    > a <a href="src/NationStates.Region.html#Region" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >A request to the Region API.</p
+	    ></div
+	  ><div class="subs constructors"
+	  ><p class="caption"
+	    >Constructors</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		><a href="#v:Region" id="v:Region" class="def"
+		  >Region</a
+		  ></td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ><tr
+	      ><td colspan="2"
+		><div class="subs fields"
+		  ><p class="caption"
+		    >Fields</p
+		    ><ul
+		    ><li
+		      ><dfn class="src"
+			><a href="#v:unRegion" id="v:unRegion" class="def"
+			  >unRegion</a
+			  > :: <a href="NationStates-Core.html#t:NS"
+			  >NS</a
+			  > a</dfn
+			><div class="doc empty"
+			>&nbsp;</div
+			></li
+		      ></ul
+		    ></div
+		  ></td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="subs instances"
+	  ><p id="control.i:Region" class="caption collapser" onclick="toggleSection('i:Region')"
+	    >Instances</p
+	    ><div id="section.i:Region" class="show"
+	    ><table
+	      ><tr
+		><td class="src clearfix"
+		  ><span class="inst-left"
+		    ><span id="control.i:id:Region:Functor:1" class="instance expander" onclick="toggleSection('i:id:Region:Functor:1')"
+		      ></span
+		      > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Functor.html#t:Functor"
+		      >Functor</a
+		      > <a href="NationStates-Region.html#t:Region"
+		      >Region</a
+		      ></span
+		    > <a href="src/NationStates.Region.html#line-67" class="link"
+		    >Source</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td colspan="2"
+		  ><div id="section.i:id:Region:Functor:1" class="inst-details hide"
+		    ><div class="subs methods"
+		      ><p class="caption"
+			>Methods</p
+			><p class="src"
+			><a href="#v:fmap"
+			  >fmap</a
+			  > :: (a -&gt; b) -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > a -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > b</p
+			><p class="src"
+			><a href="#v:-60--36-"
+			  >(&lt;$)</a
+			  > :: a -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > b -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > a</p
+			></div
+		      ></div
+		    ></td
+		  ></tr
+		><tr
+		><td class="src clearfix"
+		  ><span class="inst-left"
+		    ><span id="control.i:id:Region:Applicative:2" class="instance expander" onclick="toggleSection('i:id:Region:Applicative:2')"
+		      ></span
+		      > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Control-Applicative.html#t:Applicative"
+		      >Applicative</a
+		      > <a href="NationStates-Region.html#t:Region"
+		      >Region</a
+		      ></span
+		    > <a href="src/NationStates.Region.html#line-67" class="link"
+		    >Source</a
+		    ></td
+		  ><td class="doc empty"
+		  >&nbsp;</td
+		  ></tr
+		><tr
+		><td colspan="2"
+		  ><div id="section.i:id:Region:Applicative:2" class="inst-details hide"
+		    ><div class="subs methods"
+		      ><p class="caption"
+			>Methods</p
+			><p class="src"
+			><a href="#v:pure"
+			  >pure</a
+			  > :: a -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > a</p
+			><p class="src"
+			><a href="#v:-60--42--62-"
+			  >(&lt;*&gt;)</a
+			  > :: <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > (a -&gt; b) -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > a -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > b</p
+			><p class="src"
+			><a href="#v:-42--62-"
+			  >(*&gt;)</a
+			  > :: <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > a -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > b -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > b</p
+			><p class="src"
+			><a href="#v:-60--42-"
+			  >(&lt;*)</a
+			  > :: <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > a -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > b -&gt; <a href="NationStates-Region.html#t:Region"
+			  >Region</a
+			  > a</p
+			></div
+		      ></div
+		    ></td
+		  ></tr
+		></table
+	      ></div
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:run" id="v:run" class="def"
+	    >run</a
+	    > <a href="src/NationStates.Region.html#run" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="subs arguments"
+	  ><p class="caption"
+	    >Arguments</p
+	    ><table
+	    ><tr
+	      ><td class="src"
+		>:: <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+		  >String</a
+		  ></td
+		><td class="doc"
+		><p
+		  >Region name</p
+		  ></td
+		></tr
+	      ><tr
+	      ><td class="src"
+		>-&gt; <a href="NationStates-Region.html#t:Region"
+		  >Region</a
+		  > a</td
+		><td class="doc"
+		><p
+		  >Requested shards</p
+		  ></td
+		></tr
+	      ><tr
+	      ><td class="src"
+		>-&gt; <a href="NationStates-Core.html#t:Context"
+		  >Context</a
+		  ></td
+		><td class="doc"
+		><p
+		  >Connection manager</p
+		  ></td
+		></tr
+	      ><tr
+	      ><td class="src"
+		>-&gt; <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/System-IO.html#t:IO"
+		  >IO</a
+		  > a</td
+		><td class="doc empty"
+		>&nbsp;</td
+		></tr
+	      ></table
+	    ></div
+	  ><div class="doc"
+	  ><p
+	    >Perform a request to the Region API.</p
+	    ></div
+	  ></div
+	><h1 id="g:2"
+	>Shards</h1
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:name" id="v:name" class="def"
+	    >name</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    > <a href="src/NationStates.Region.html#name" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Region name.</p
+	    ><pre
+	    >&quot;Pony Lands&quot;</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:factbook" id="v:factbook" class="def"
+	    >factbook</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    > <a href="src/NationStates.Region.html#factbook" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Factbook, in BBCode format.</p
+	    ><pre
+	    >&quot;[b]We&amp;#39;ve got ponies, therefore your argument is invalid...&quot;</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:numnations" id="v:numnations" class="def"
+	    >numnations</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    > <a href="src/NationStates.Region.html#numnations" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Number of nations in the region.</p
+	    ><pre
+	    >112</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:nations" id="v:nations" class="def"
+	    >nations</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > [<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >] <a href="src/NationStates.Region.html#nations" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >List of nations in the region.</p
+	    ><pre
+	    >[&quot;urmanian&quot;,&quot;enatai&quot;,&quot;unfitting_doors&quot;,&quot;lykosia&quot;,&quot;trotterdam&quot;]</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:delegate" id="v:delegate" class="def"
+	    >delegate</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Maybe.html#t:Maybe"
+	    >Maybe</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >) <a href="src/NationStates.Region.html#delegate" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Region delegate.</p
+	    ><p
+	    >Returns <code
+	      >Nothing</code
+	      > when the region has no delegate.</p
+	    ><pre
+	    >Just &quot;princess_luna&quot;</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:delegatevotes" id="v:delegatevotes" class="def"
+	    >delegatevotes</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    > <a href="src/NationStates.Region.html#delegatevotes" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >The number of endorsements earned by the delegate.</p
+	    ><p
+	    >Returns <code
+	      >0</code
+	      > when the region has no delegate.</p
+	    ><pre
+	    >22</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:gavote" id="v:gavote" class="def"
+	    >gavote</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Maybe.html#t:Maybe"
+	    >Maybe</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    >, <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    >)) <a href="src/NationStates.Region.html#gavote" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >The number of votes for and against the current General Assembly
+ resolution.</p
+	    ><p
+	    >Returns <code
+	      >Nothing</code
+	      > when there is no proposal at vote.</p
+	    ><pre
+	    >Just (28,11)</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:scvote" id="v:scvote" class="def"
+	    >scvote</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Maybe.html#t:Maybe"
+	    >Maybe</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    >, <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Prelude.html#t:Integer"
+	    >Integer</a
+	    >)) <a href="src/NationStates.Region.html#scvote" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >The number of votes for and against the current Security Council
+ resolution.</p
+	    ><p
+	    >Returns <code
+	      >Nothing</code
+	      > when there is no proposal at vote.</p
+	    ><pre
+	    >Just (20,34)</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:founder" id="v:founder" class="def"
+	    >founder</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Maybe.html#t:Maybe"
+	    >Maybe</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >) <a href="src/NationStates.Region.html#founder" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Region founder.</p
+	    ><p
+	    >Returns <code
+	      >Nothing</code
+	      > when the region is founderless.</p
+	    ><pre
+	    >Just &quot;magical_equestria&quot;</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:power" id="v:power" class="def"
+	    >power</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    > <a href="src/NationStates.Region.html#power" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Regional power.</p
+	    ><pre
+	    >&quot;High&quot;</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:flag" id="v:flag" class="def"
+	    >flag</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > (<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-Maybe.html#t:Maybe"
+	    >Maybe</a
+	    > <a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >) <a href="src/NationStates.Region.html#flag" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Regional flag.</p
+	    ><pre
+	    >Just &quot;http://www.nationstates.net/images/flags/uploads/rflags/pony_lands__478033.png&quot;</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:embassies" id="v:embassies" class="def"
+	    >embassies</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > [<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >] <a href="src/NationStates.Region.html#embassies" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Region embassies.</p
+	    ><pre
+	    >[&quot;New Lunar Republic&quot;,&quot;Tareldanore&quot;]</pre
+	    ></div
+	  ></div
+	><div class="top"
+	><p class="src"
+	  ><a href="#v:tags" id="v:tags" class="def"
+	    >tags</a
+	    > :: <a href="NationStates-Region.html#t:Region"
+	    >Region</a
+	    > [<a href="https://hackage.haskell.org/package/base-4.8.0.0/docs/Data-String.html#t:String"
+	    >String</a
+	    >] <a href="src/NationStates.Region.html#tags" class="link"
+	    >Source</a
+	    ></p
+	  ><div class="doc"
+	  ><p
+	    >Region tags.</p
+	    ><pre
+	    >[&quot;Silly&quot;,&quot;Monarchist&quot;,&quot;Large&quot;]</pre
+	    ></div
+	  ></div
+	></div
+      ></div
+    ><div id="footer"
+    ><p
+      >Produced by <a href="http://www.haskell.org/haddock/"
+	>Haddock</a
+	> version 2.16.2</p
+      ></div
+    ></body
+  ></html
+>

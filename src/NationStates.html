@@ -1,0 +1,678 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+><head
+  ><link rel="stylesheet" type="text/css" href="style.css"
+     /><script type="text/javascript" src="highlight.js"
+    ></script
+    ></head
+  ><body
+  ><pre
+    ><span class="hs-keyword"
+      >module</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >NationStates</span
+      ><span
+      > </span
+      ><span class="hs-special"
+      >(</span
+      ><span
+      >
+</span
+      ><a name="line-2"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-3"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.Core.html#Context"
+      ><span class="hs-identifier hs-type"
+	>Context</span
+	></a
+      ><span class="hs-special"
+      >(</span
+      ><span class="hs-special"
+      >)</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-4"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.html#newContext"
+      ><span class="hs-identifier hs-var"
+	>newContext</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-5"
+      ></a
+      ><span
+      >    </span
+      ><a href="NationStates.html#newContext%27"
+      ><span class="hs-identifier hs-var"
+	>newContext'</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-6"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-7"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-comment"
+      >-- * Core types</span
+      ><span
+      >
+</span
+      ><a name="line-8"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-keyword"
+      >module</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >NationStates</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Types</span
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-9"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-10"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-special"
+      >)</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >where</span
+      ><span
+      >
+</span
+      ><a name="line-11"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-12"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-13"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Network</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >HTTP</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Client</span
+      ><span
+      >
+</span
+      ><a name="line-14"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><span class="hs-identifier"
+      >Network</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >HTTP</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >Client</span
+      ><span class="hs-operator"
+      >.</span
+      ><span class="hs-identifier"
+      >TLS</span
+      ><span
+      >
+</span
+      ><a name="line-15"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-16"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html"
+      ><span class="hs-identifier"
+	>NationStates</span
+	><span class="hs-operator"
+	>.</span
+	><span class="hs-identifier"
+	>Core</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-17"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><a href="NationStates.RateLimit.html"
+      ><span class="hs-identifier"
+	>NationStates</span
+	><span class="hs-operator"
+	>.</span
+	><span class="hs-identifier"
+	>RateLimit</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-18"
+      ></a
+      ><span class="hs-keyword"
+      >import</span
+      ><span
+      > </span
+      ><a href="NationStates.Types.html"
+      ><span class="hs-identifier"
+	>NationStates</span
+	><span class="hs-operator"
+	>.</span
+	><span class="hs-identifier"
+	>Types</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-19"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-20"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-21"
+      ></a
+      ><span class="hs-comment"
+      >-- | Create a new 'Context'.</span
+      ><span
+      >
+</span
+      ><a name="line-22"
+      ></a
+      ><span class="hs-identifier"
+      >newContext</span
+      ><span
+      >
+</span
+      ><a name="line-23"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-24"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- ^ User agent</span
+      ><span
+      >
+</span
+      ><a name="line-25"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >IO</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#Context"
+      ><span class="hs-identifier hs-type"
+	>Context</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-26"
+      ></a
+      ><a name="newContext"
+      ><a href="NationStates.html#newContext"
+	><span class="hs-identifier"
+	  >newContext</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627447470"
+      ><a href="#local-1627447470"
+	><span class="hs-identifier"
+	  >userAgent</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.html#newContext%27"
+      ><span class="hs-identifier hs-var"
+	>newContext'</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627447470"
+      ><span class="hs-identifier hs-var"
+	>userAgent</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >True</span
+      ><span
+      >
+</span
+      ><a name="line-27"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-28"
+      ></a
+      ><span
+      >
+</span
+      ><a name="line-29"
+      ></a
+      ><span class="hs-comment"
+      >-- | Create a new 'Context', with extra options.</span
+      ><span
+      >
+</span
+      ><a name="line-30"
+      ></a
+      ><span class="hs-identifier"
+      >newContext'</span
+      ><span
+      >
+</span
+      ><a name="line-31"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >::</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >String</span
+      ><span
+      >
+</span
+      ><a name="line-32"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- ^ User agent</span
+      ><span
+      >
+</span
+      ><a name="line-33"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >Bool</span
+      ><span
+      >
+</span
+      ><a name="line-34"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-comment"
+      >-- ^ Use HTTPS</span
+      ><span
+      >
+</span
+      ><a name="line-35"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-glyph"
+      >-&gt;</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-type"
+      >IO</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#Context"
+      ><span class="hs-identifier hs-type"
+	>Context</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-36"
+      ></a
+      ><a name="newContext%27"
+      ><a href="NationStates.html#newContext%27"
+	><span class="hs-identifier"
+	  >newContext'</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627447471"
+      ><a href="#local-1627447471"
+	><span class="hs-identifier"
+	  >userAgent</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><a name="local-1627447472"
+      ><a href="#local-1627447472"
+	><span class="hs-identifier"
+	  >isSecure</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><span class="hs-keyword"
+      >do</span
+      ><span
+      >
+</span
+      ><a name="line-37"
+      ></a
+      ><span
+      >    </span
+      ><a name="local-1627447582"
+      ><a href="#local-1627447582"
+	><span class="hs-identifier"
+	  >man</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >newManager</span
+      ><span
+      > </span
+      ><span class="hs-operator hs-var"
+      >$</span
+      ><span
+      >
+</span
+      ><a name="line-38"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-keyword"
+      >if</span
+      ><span
+      > </span
+      ><a href="#local-1627447472"
+      ><span class="hs-identifier hs-var"
+	>isSecure</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-39"
+      ></a
+      ><span
+      >            </span
+      ><span class="hs-keyword"
+      >then</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >tlsManagerSettings</span
+      ><span
+      >
+</span
+      ><a name="line-40"
+      ></a
+      ><span
+      >            </span
+      ><span class="hs-keyword"
+      >else</span
+      ><span
+      > </span
+      ><span class="hs-identifier hs-var"
+      >defaultManagerSettings</span
+      ><span
+      >
+</span
+      ><a name="line-41"
+      ></a
+      ><span
+      >    </span
+      ><a name="local-1627447583"
+      ><a href="#local-1627447583"
+	><span class="hs-identifier"
+	  >limit</span
+	  ></a
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >&lt;-</span
+      ><span
+      > </span
+      ><a href="NationStates.RateLimit.html#newRateLimit"
+      ><span class="hs-identifier hs-var"
+	>newRateLimit</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-number"
+      >0.6</span
+      ><span
+      >
+</span
+      ><a name="line-42"
+      ></a
+      ><span
+      >    </span
+      ><span class="hs-identifier hs-var"
+      >return</span
+      ><span
+      > </span
+      ><a href="NationStates.Core.html#Context"
+      ><span class="hs-identifier hs-var"
+	>Context</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-special"
+      >{</span
+      ><span
+      >
+</span
+      ><a name="line-43"
+      ></a
+      ><span
+      >        </span
+      ><a href="NationStates.Core.html#contextManager"
+      ><span class="hs-identifier hs-var"
+	>contextManager</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="#local-1627447582"
+      ><span class="hs-identifier hs-var"
+	>man</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-44"
+      ></a
+      ><span
+      >        </span
+      ><a href="NationStates.Core.html#contextRateLimit"
+      ><span class="hs-identifier hs-var"
+	>contextRateLimit</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="NationStates.RateLimit.html#rateLimit"
+      ><span class="hs-identifier hs-var"
+	>rateLimit</span
+	></a
+      ><span
+      > </span
+      ><a href="#local-1627447583"
+      ><span class="hs-identifier hs-var"
+	>limit</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-45"
+      ></a
+      ><span
+      >        </span
+      ><a href="NationStates.Core.html#contextIsSecure"
+      ><span class="hs-identifier hs-var"
+	>contextIsSecure</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="#local-1627447472"
+      ><span class="hs-identifier hs-var"
+	>isSecure</span
+	></a
+      ><span class="hs-special"
+      >,</span
+      ><span
+      >
+</span
+      ><a name="line-46"
+      ></a
+      ><span
+      >        </span
+      ><a href="NationStates.Core.html#contextUserAgent"
+      ><span class="hs-identifier hs-var"
+	>contextUserAgent</span
+	></a
+      ><span
+      > </span
+      ><span class="hs-glyph"
+      >=</span
+      ><span
+      > </span
+      ><a href="#local-1627447471"
+      ><span class="hs-identifier hs-var"
+	>userAgent</span
+	></a
+      ><span
+      >
+</span
+      ><a name="line-47"
+      ></a
+      ><span
+      >        </span
+      ><span class="hs-special"
+      >}</span
+      ><span
+      >
+</span
+      ><a name="line-48"
+      ></a
+      ></pre
+    ></body
+  ></html
+>

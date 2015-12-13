@@ -1,0 +1,24 @@
+general:
+  branches:
+    ignore:
+      - gh-pages
+
+machine:
+  ghc:
+    version: 7.10.1
+
+dependencies:
+  override:
+    - sudo apt-get install hscolour
+    - cabal update
+    - cabal install --only-dependencies --enable-documentation --haddock-hyperlink-source
+
+test:
+  override:
+    - cabal build
+
+deployment:
+  push:
+    branch: master
+    commands:
+      - ./upload-docs nationstates git@github.com:lfairy/nationstates.git
